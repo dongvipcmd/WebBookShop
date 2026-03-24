@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <title>Book List</title>
+</head>
+<body>
+
+<h2>Danh sách sách</h2>
+
+<!-- Hiển thị user + logout -->
+<div>
+    Xin chào: <span sec:authentication="name"></span>
+
+    <form th:action="@{/logout}" method="post" style="display:inline;">
+        <button type="submit">Logout</button>
+    </form>
+</div>
+
+<br>
+
+<a th:href="@{/books/create}">➕ Thêm sách</a>
+
+<table border="1">
+    <tr>
+        <th>ID</th>
+        <th>Tên sách</th>
+        <th>Tác giả</th>
+        <th>Giá</th>
+        <th>Hành động</th>
+    </tr>
+
+    <tr th:each="book : ${books}">
+        <td th:text="${book.id}"></td>
+        <td th:text="${book.name}"></td>
+        <td th:text="${book.author}"></td>
+        <td th:text="${book.price}"></td>
+        <td>
+            <a th:href="@{/books/edit/{id}(id=${book.id})}">Sửa</a> |
+            <a th:href="@{/books/delete/{id}(id=${book.id})}"
+               onclick="return confirm('Xóa?')">Xóa</a>
+        </td>
+    </tr>
+</table>
+
+</body>
+</html>

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Book Form</title>
+</head>
+<body>
+
+<h2>Thêm / Sửa sách</h2>
+
+<form th:action="@{/books/save}" method="post" th:object="${book}">
+
+    <input type="hidden" th:field="*{id}" />
+
+    <div>
+        Tên sách:
+        <input type="text" th:field="*{title}" />
+    </div>
+
+    <div>
+        Tác giả:
+        <input type="text" th:field="*{author}" />
+    </div>
+
+    <div>
+        Giá:
+        <input type="number" th:field="*{price}" />
+    </div>
+
+    <br>
+
+    <button type="submit">Lưu</button>
+</form>
+
+<br>
+
+<a th:href="@{/books}">⬅ Quay lại</a>
+
+</body>
+</html>
