@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Cập nhật số lượng</title>
+</head>
+<body>
+
+<h2>Cập nhật số lượng</h2>
+
+<p>Tên sách: <span th:text="${book.name}"></span></p>
+<p>Số lượng hiện tại: <span th:text="${book.stockQuantity}"></span></p>
+
+<form th:action="@{/books/update-quantity/{id}(id=${book.id})}" method="post">
+    <input type="number" name="quantity" placeholder="Nhập số lượng (+/-)" />
+    <button type="submit">Cập nhật</button>
+</form>
+
+<br>
+<a th:href="@{/books}">⬅ Quay lại</a>
+
+</body>
+</html>

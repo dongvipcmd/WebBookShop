@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Danh sách tác giả</title>
+</head>
+<body>
+
+<h2>Danh sách tác giả</h2>
+
+<a th:href="@{/authors/create}">Thêm tác giả</a>
+
+<br><br>
+
+<table border="1">
+  <tr>
+    <th>ID</th>
+    <th>Tên</th>
+    <th>Ngày sinh</th>
+    <th>Tiểu sử</th>
+    <th>Hành động</th>
+  </tr>
+
+  <tr th:each="a : ${authors}">
+    <td th:text="${a.id}"></td>
+    <td th:text="${a.fullName}"></td>
+    <td th:text="${a.dob}"></td>
+    <td th:text="${a.bio}"></td>
+    <td>
+      <a th:href="@{/authors/edit/{id}(id=${a.id})}">Sửa</a> |
+      <a th:href="@{/authors/delete/{id}(id=${a.id})}"
+         onclick="return confirm('Bạn có chắc muốn xóa?')">Xóa</a>
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>

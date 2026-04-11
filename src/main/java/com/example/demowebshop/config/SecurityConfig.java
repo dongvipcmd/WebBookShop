@@ -1,6 +1,6 @@
 package com.example.demowebshop.config;
 
-import com.example.demowebshop.service.serviceimp.CustomUserDetailsService;
+import com.example.demowebshop.service.CustomUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,7 +20,7 @@ public class SecurityConfig {
 
     private final String[] PUBLIC_ENDPOINTS = {
             "/login", "/register", "/css/**", "/home",
-            "/js/**", "/images/**", "/webjars/**", "/register", "/login"
+            "/js/**", "/images/**", "/webjars/**", "/register", "/login","/books/**", "/authors/**", "/categories/**"
     };
 
     @Bean

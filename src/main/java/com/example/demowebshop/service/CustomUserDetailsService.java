@@ -1,4 +1,4 @@
-package com.example.demowebshop.service.serviceimp;
+package com.example.demowebshop.service;
 import com.example.demowebshop.entity.User;
 import com.example.demowebshop.repository.UserRepository;
 import lombok.RequiredArgsConstructor;

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Author Form</title>
+</head>
+<body>
+
+<h2>Thêm / Sửa tác giả</h2>
+
+<form th:action="${author.id} == null ? @{/authors} : @{/authors/update/{id}(id=${author.id})}"
+      method="post"
+      th:object="${author}">
+
+    <input type="hidden" th:field="*{id}" />
+
+    <div>
+        Tên tác giả:
+        <input type="text" th:field="*{fullName}" />
+    </div>
+
+    <div>
+        Ngày sinh:
+        <input type="date" th:field="*{dob}" />
+    </div>
+
+    <div>
+        Tiểu sử:
+        <textarea th:field="*{bio}"></textarea>
+    </div>
+
+    <br>
+
+    <button type="submit">Lưu</button>
+</form>
+
+<br>
+
+<a th:href="@{/authors}"> Quay lại</a>
+
+</body>
+</html>

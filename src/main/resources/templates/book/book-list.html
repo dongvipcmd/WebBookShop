@@ -1,44 +1,39 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Book List</title>
+    <title>Danh sách sách</title>
 </head>
 <body>
 
 <h2>Danh sách sách</h2>
 
-<!-- Hiển thị user + logout -->
-<div>
-    Xin chào: <span sec:authentication="name"></span>
-
-    <form th:action="@{/logout}" method="post" style="display:inline;">
-        <button type="submit">Logout</button>
-    </form>
-</div>
-
-<br>
-
 <a th:href="@{/books/create}">➕ Thêm sách</a>
+
+<br><br>
 
 <table border="1">
     <tr>
         <th>ID</th>
-        <th>Tên sách</th>
-        <th>Tác giả</th>
+        <th>Tên</th>
         <th>Giá</th>
+        <th>Thể loại</th>
+        <th>Tác giả</th>
+        <th>Số lượng</th>
         <th>Hành động</th>
     </tr>
 
-    <tr th:each="book : ${books}">
-        <td th:text="${book.id}"></td>
-        <td th:text="${book.name}"></td>
-        <td th:text="${book.author}"></td>
-        <td th:text="${book.price}"></td>
+    <tr th:each="b : ${books}">
+        <td th:text="${b.id}"></td>
+        <td th:text="${b.name}"></td>
+        <td th:text="${b.price}"></td>
+        <td th:text="${b.category.name}"></td>
+        <td th:text="${b.author.fullName}"></td>
+        <td th:text="${b.stockQuantity}"></td>
         <td>
-            <a th:href="@{/books/edit/{id}(id=${book.id})}">Sửa</a> |
-            <a th:href="@{/books/delete/{id}(id=${book.id})}"
-               onclick="return confirm('Xóa?')">Xóa</a>
+            <a th:href="@{/books/edit/{id}(id=${b.id})}">Sửa</a> |
+            <a th:href="@{/books/update-quantity/{id}(id=${b.id})}">Nhập thêm số lượng</a> |
+            <a th:href="@{/books/delete/{id}(id=${b.id})}"
+               onclick="return confirm('Bạn có chắc muốn xóa?')">Xóa</a>
         </td>
     </tr>
 </table>

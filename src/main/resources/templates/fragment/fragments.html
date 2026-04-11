@@ -28,11 +28,17 @@
                         Thể loại
                     </a>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="#">Văn học</a></li>
-                        <li><a class="dropdown-item" href="#">Kinh tế</a></li>
-                        <li><a class="dropdown-item" href="#">Kỹ năng sống</a></li>
+                        <li th:each="c : ${categories}">
+                            <a class="dropdown-item"
+                               th:text="${c.name}"
+                               th:href="@{/shop(categoryId=${c.id})}">
+                            </a>
+                        </li>
+
                         <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" href="#">Tất cả</a></li>
+                        <li>
+                            <a class="dropdown-item" th:href="@{/shop}">Tất cả</a>
+                        </li>
                     </ul>
                 </li>
                 <li class="nav-item">

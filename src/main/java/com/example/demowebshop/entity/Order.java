@@ -6,6 +6,7 @@ import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -19,12 +20,24 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private LocalDateTime createdAt;
+    private LocalDateTime orderDateTime = LocalDateTime.now();
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+    // FK trỏ tới user.id
+    private Long userId;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
-    private List<OrderItem> items;
+    // có thể null nếu ko dùng voucher
+    private Long voucherId;
+
+    // Tổng tiền hàng trước giảm và cộng ship
+    private BigDecimal totalAmount;
+
+    // Số tiền được giảm từ voucher
+    private BigDecimal discountAmount = BigDecimal.ZERO;
+
+    // Phí vận chuyển (0 nếu dùng voucher free ship)
+    private BigDecimal shippingFee = BigDecimal.ZERO;
+
+    // Tổng thanh toán = totalAmount - discountAmount + shippingFee
+    private BigDecimal finalAmount;
+
 }

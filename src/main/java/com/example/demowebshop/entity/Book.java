@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Entity
@@ -16,16 +17,31 @@ public class Book {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String title;
-    private String author;
-    private double price;
-    private int stock;
+    private String name;
+
+    private BigDecimal price;
+
     private String image;
 
-    @OneToMany(mappedBy = "book")
-    private List<OrderItem> orderItems;
+    private String description;
 
-    @OneToMany(mappedBy = "book")
-    private List<CartItem> cartItems;
+    private Integer stockQuantity;
+
+    // FK trỏ tới category.id
+    @Column(name = "category_id")
+    private Long categoryId;
+
+    // FK authorId
+    @Column(name = "author_id")
+    private Long authorId;
+
+    @ManyToOne
+    @JoinColumn(name = "category_id", insertable = false, updatable = false)
+    private Category category;
+
+    @ManyToOne
+    @JoinColumn(name = "author_id", insertable = false, updatable = false)
+    private Author author;
+
 }
 

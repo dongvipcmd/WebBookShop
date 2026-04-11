@@ -1,8 +1,14 @@
 package com.example.demowebshop.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.time.LocalDate;
 
 @Entity
+@Getter
+@Setter
 @Table(name = "user")
 public class User {
 
@@ -14,35 +20,17 @@ public class User {
     private String password;
     private String role;
 
-    public Long getId() {
-        return id;
-    }
+    private String name;
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    private String gender;
 
-    public String getUsername() {
-        return username;
-    }
+    private String address;
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
+    private LocalDate dob;
 
-    public String getPassword() {
-        return password;
-    }
+    private String phoneNumber;
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
+    private String email;
 
-    public String getRole() {
-        return role;
-    }
 
-    public void setRole(String role) {
-        this.role = role;
-    }
 }
