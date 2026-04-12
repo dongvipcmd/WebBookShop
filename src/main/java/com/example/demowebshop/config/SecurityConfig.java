@@ -20,7 +20,8 @@ public class SecurityConfig {
 
     private final String[] PUBLIC_ENDPOINTS = {
             "/login", "/register", "/css/**", "/home",
-            "/js/**", "/images/**", "/webjars/**", "/register", "/login","/books/**", "/authors/**", "/categories/**"
+            "/js/**", "/images/**", "/webjars/**", "/register", "/login",
+            "/books/**", "/authors/**", "/categories/**","/vouchers/**"
     };
 
     @Bean

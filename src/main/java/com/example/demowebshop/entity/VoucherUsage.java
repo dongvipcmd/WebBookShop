@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
         name = "voucher_usage",
         uniqueConstraints = @UniqueConstraint(
                 name = "uq_voucher_user",
-                // Mỗi khách chỉ được dùng 1 mã voucher 1 lần
+                // Mỗi khách chỉ dùng 1 mã 1 lần
                 columnNames = {"voucherId", "userId"}
         )
 )
@@ -27,18 +27,15 @@ public class VoucherUsage {
     // FK trỏ tới voucher.id
     private Long voucherId;
 
-    // FK trỏ tới khachhang.id
+    // FK trỏ tới user.id
     private Long userId;
 
-    // FK trỏ tới donhang.id — mỗi đơn chỉ có 1 bản ghi usage
-    @Column(unique = true)
+    // FK trỏ tới order.id
+    // (1 discount voucher + 1 shipping voucher)
     private Long orderId;
 
     private LocalDateTime usedAt = LocalDateTime.now();
 
-    // Số tiền giảm giá thực tế đã áp dụng
+    // Số tiền thực tế đã giảm của voucher này
     private BigDecimal discountApplied = BigDecimal.ZERO;
-
-    // Phí ship thực tế đã được miễn
-    private BigDecimal shippingDiscountApplied = BigDecimal.ZERO;
 }

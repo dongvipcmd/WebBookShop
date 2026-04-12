@@ -8,7 +8,6 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Entity
 @Getter
@@ -20,24 +19,18 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private LocalDateTime orderDateTime = LocalDateTime.now();
-
-    // FK trỏ tới user.id
     private Long userId;
+    private LocalDateTime orderDate = LocalDateTime.now();
 
-    // có thể null nếu ko dùng voucher
-    private Long voucherId;
+    // Mã giảm giá sản phẩm
+    private Long discountVoucherId;
 
-    // Tổng tiền hàng trước giảm và cộng ship
-    private BigDecimal totalAmount;
+    // Mã giảm phí ship
+    private Long shippingVoucherId;
 
-    // Số tiền được giảm từ voucher
-    private BigDecimal discountAmount = BigDecimal.ZERO;
-
-    // Phí vận chuyển (0 nếu dùng voucher free ship)
-    private BigDecimal shippingFee = BigDecimal.ZERO;
-
-    // Tổng thanh toán = totalAmount - discountAmount + shippingFee
-    private BigDecimal finalAmount;
-
+    private BigDecimal totalAmount;       // tổng tiền hàng
+    private BigDecimal discountAmount;    // tiền giảm từ discountVoucher
+    private BigDecimal shippingFee;       // phí ship gốc
+    private BigDecimal shippingDiscount;  // ship được giảm từ shippingVoucher
+    private BigDecimal finalAmount;       // tổng thanh toán cuối
 }

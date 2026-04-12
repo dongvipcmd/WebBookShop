@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Danh sách Voucher</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        .table-header-blue {
+            background: linear-gradient(45deg, #0d6efd, #0a58ca);
+            color: white;
+        }
+    </style>
+</head>
+<body class="bg-light">
+
+<div class="container mt-5">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Danh sách Voucher</h2>
+        <a th:href="@{/vouchers/create}" class="btn btn-primary">Tạo mới</a>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+
+            <table class="table table-bordered table-hover align-middle">
+                <thead class="table-header-blue">
+                <tr>
+                    <th>ID</th>
+                    <th>Mã</th>
+                    <th>Loại Voucher</th>
+                    <th>Giá trị giảm giá</th>
+                    <th>Điều kiện đơn tối thiểu</th>
+                    <th>Giảm tối đa</th>
+                    <th>Trạng thái</th>
+                    <th>Hành động</th>
+                </tr>
+                </thead>
+                <tbody>
+
+                <tr th:each="v : ${vouchers}">
+                    <td th:text="${v.id}"></td>
+
+                    <td>
+                        <span class="badge bg-info text-dark" th:text="${v.code}"></span>
+                    </td>
+
+                    <td th:switch="${v.voucherType}">
+                        <span th:case="${T(com.example.demowebshop.enums.VoucherType).DISCOUNT}"
+                              class="badge bg-primary">Giảm giá</span>
+
+                        <span th:case="${T(com.example.demowebshop.enums.VoucherType).SHIPPING}"
+                              class="badge bg-warning text-dark">Giảm ship</span>
+
+                    </td>
+
+                    <td>
+                        <!-- DISCOUNT -->
+                        <span th:if="${v.voucherType == T(com.example.demowebshop.enums.VoucherType).DISCOUNT}">
+
+                            <span th:if="${v.discountType == T(com.example.demowebshop.enums.DiscountType).PERCENTAGE}"
+                                  th:text="${v.discountPercent != null ? v.discountPercent + '%' : '-'}">
+                            </span>
+
+                            <span th:if="${v.discountType == T(com.example.demowebshop.enums.DiscountType).FIXED}"
+                                  th:text="${v.discountValue != null ?
+                                      #numbers.formatDecimal(v.discountValue, 0, 'COMMA', 0, 'POINT') + ' ₫' : '-'}">
+                            </span>
+
+                        </span>
+
+                        <!-- SHIPPING -->
+                        <span th:if="${v.voucherType == T(com.example.demowebshop.enums.VoucherType).SHIPPING}">
+
+                            <span th:if="${v.maxShippingDiscount != null}"
+                                  th:text="${#numbers.formatDecimal(v.maxShippingDiscount, 0, 'COMMA', 0, 'POINT') + ' ₫'}">
+                            </span>
+
+                            <span th:if="${v.maxShippingDiscount == null}">
+                                Miễn phí ship
+                            </span>
+
+                        </span>
+                    </td>
+
+
+                    <!-- Điều kiện -->
+                    <td th:text="${#numbers.formatDecimal(v.minOrderValue, 0, 'COMMA', 0, 'POINT')} + ' ₫'"></td>
+
+                    <td>
+                        <!-- DISCOUNT-->
+                        <span th:if="${v.voucherType == T(com.example.demowebshop.enums.VoucherType).DISCOUNT}">
+                            <span th:if="${v.discountType == T(com.example.demowebshop.enums.DiscountType).PERCENTAGE}"
+                                  th:text="${v.maxDiscount != null ?
+                                      #numbers.formatDecimal(v.maxDiscount, 0, 'COMMA', 0, 'POINT') + ' ₫' : 'Không giới hạn'}">
+                            </span>
+                            <span th:if="${v.discountType == T(com.example.demowebshop.enums.DiscountType).FIXED}"
+                                  th:text="${v.discountValue != null ? #numbers.formatDecimal(v.discountValue, 0, 'COMMA', 0, 'POINT') + ' ₫' : '-'}">
+                            </span>
+                        </span>
+                        <span th:if="${v.voucherType == T(com.example.demowebshop.enums.VoucherType).SHIPPING}">-</span>
+                    </td>
+
+                    <!-- Trạng thái -->
+                    <td>
+                        <span th:if="${v.active}" class="badge bg-success">Hoạt động</span>
+                        <span th:unless="${v.active}" class="badge bg-secondary">Tắt</span>
+                    </td>
+
+                    <!-- Action -->
+                    <td>
+                        <a th:href="@{/vouchers/edit/{id}(id=${v.id})}"
+                           class="btn btn-sm btn-warning">Sửa</a>
+
+                        <a th:href="@{/vouchers/delete/{id}(id=${v.id})}"
+                           class="btn btn-sm btn-danger"
+                           onclick="return confirm('Bạn có chắc muốn xoá?')">Xóa</a>
+                    </td>
+                </tr>
+
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>
