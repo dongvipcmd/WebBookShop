@@ -36,6 +36,10 @@ public class BookService {
         book.setDescription(newData.getDescription());
         book.setStockQuantity(newData.getStockQuantity());
 
+        if (newData.getImage() != null && !newData.getImage().isEmpty()) {
+            book.setImage(newData.getImage());
+        }
+
         bookRepository.save(book);
     }
 
@@ -45,7 +49,16 @@ public class BookService {
 
     public void updateQuantity(Long id, Integer quantity) {
         Book book = getById(id);
-        book.setStockQuantity(book.getStockQuantity() + quantity);
+
+        int current = book.getStockQuantity() == null ? 0 : book.getStockQuantity();
+        book.setStockQuantity(current + quantity);
+
+        bookRepository.save(book);
+    }
+
+    public void updateImage(Long id, String imagePath) {
+        Book book = getById(id);
+        book.setImage(imagePath);
         bookRepository.save(book);
     }
 }

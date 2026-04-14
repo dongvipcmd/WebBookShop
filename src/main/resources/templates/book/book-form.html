@@ -6,36 +6,48 @@
     <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
 
-    <!-- Select2 CSS (CDN khác ổn định hơn) -->
+    <!-- Select2 -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/css/select2.min.css" rel="stylesheet"/>
 
+    <style>
+        .preview-img {
+            width: 150px;
+            height: 200px;
+            object-fit: cover;
+            border: 1px solid #ccc;
+            margin-bottom: 10px;
+        }
+    </style>
 </head>
 
 <body>
 
 <div class="container mt-4">
-    <h2 class="mb-4">Thêm / Sửa sách</h2>
+    <h2 class="mb-4" th:text="${book.id} == null ? 'Thêm sách' : 'Sửa sách'"></h2>
 
     <form th:action="${book.id} == null ? @{/books} : @{/books/update/{id}(id=${book.id})}"
           method="post"
+          enctype="multipart/form-data"
           th:object="${book}">
 
         <input type="hidden" th:field="*{id}" />
 
+        <!-- TÊN -->
         <div class="mb-3">
             <label class="form-label">Tên sách</label>
-            <input type="text" class="form-control" th:field="*{name}" />
+            <input type="text" class="form-control" th:field="*{name}" required/>
         </div>
 
         <!-- GIÁ -->
         <div class="mb-3">
             <label class="form-label">Giá</label>
-            <input type="number" class="form-control" th:field="*{price}" />
+            <input type="number" class="form-control" th:field="*{price}" required/>
         </div>
 
+        <!-- CATEGORY -->
         <div class="mb-3">
             <label class="form-label">Thể loại</label>
-            <select th:field="*{categoryId}" class="form-select select2">
+            <select th:field="*{categoryId}" class="form-select select2" required>
                 <option value="">-- Chọn thể loại --</option>
                 <option th:each="c : ${categories}"
                         th:value="${c.id}"
@@ -44,9 +56,10 @@
             </select>
         </div>
 
+        <!-- AUTHOR -->
         <div class="mb-3">
             <label class="form-label">Tác giả</label>
-            <select th:field="*{authorId}" class="form-select select2">
+            <select th:field="*{authorId}" class="form-select select2" required>
                 <option value="">-- Chọn tác giả --</option>
                 <option th:each="a : ${authors}"
                         th:value="${a.id}"
@@ -57,17 +70,25 @@
 
         <div class="mb-3">
             <label class="form-label">Mô tả</label>
-            <textarea class="form-control" th:field="*{description}"></textarea>
+            <textarea class="form-control" th:field="*{description}" rows="3"></textarea>
         </div>
 
         <div class="mb-3">
             <label class="form-label">Số lượng</label>
-            <input type="number" class="form-control" th:field="*{stockQuantity}" />
+            <input type="number" class="form-control" th:field="*{stockQuantity}" required/>
         </div>
 
         <div class="mb-3">
-            <label class="form-label">Ảnh (URL)</label>
-            <input type="text" class="form-control" th:field="*{image}" />
+            <label class="form-label">Ảnh sách</label>
+
+            <div>
+                <img id="preview"
+                     th:src="${book.image} != null ? @{${book.image}} : 'https://via.placeholder.com/150'"
+                     class="preview-img"/>
+            </div>
+
+            <input type="file" name="imageFile" class="form-control" accept="image/*"
+                   onchange="previewImage(event)">
         </div>
 
         <button type="submit" class="btn btn-primary">Lưu</button>
@@ -76,22 +97,27 @@
     </form>
 </div>
 
-
-
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/js/select2.min.js"></script>
 
-
 <script>
+    // Select2
     $(document).ready(function() {
         $('.select2').select2({
-            placeholder: "Nhập thông tin để tìm kiếm",
+            placeholder: "Chọn...",
             allowClear: true,
-            minimumResultsForSearch: 0,
             width: '100%'
         });
     });
+
+
+    function previewImage(event) {
+        const reader = new FileReader();
+        reader.onload = function () {
+            document.getElementById('preview').src = reader.result;
+        }
+        reader.readAsDataURL(event.target.files[0]);
+    }
 </script>
 
 </body>

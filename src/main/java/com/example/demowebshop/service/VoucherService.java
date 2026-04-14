@@ -1,11 +1,15 @@
 package com.example.demowebshop.service;
 
 import com.example.demowebshop.entity.Voucher;
+import com.example.demowebshop.enums.DiscountType;
 import com.example.demowebshop.enums.VoucherType;
 import com.example.demowebshop.repository.VoucherRepository;
+import com.example.demowebshop.repository.VoucherUsageRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -13,6 +17,7 @@ import java.util.List;
 public class VoucherService {
 
     private final VoucherRepository voucherRepository;
+    private final VoucherUsageRepository voucherUsageRepository;
 
     public void createVoucher(Voucher voucher){
         voucherRepository.save(voucher);
@@ -87,5 +92,52 @@ public class VoucherService {
 
     public void deleteVoucher(Long id){
         voucherRepository.deleteById(id);
+    }
+
+    public Voucher validate(String code, Long userId, BigDecimal orderTotal, VoucherType expectedType) {
+        Voucher v = voucherRepository.findByCode(code)
+                .orElseThrow(() -> new RuntimeException("Mã voucher không tồn tại"));
+
+        if (!Boolean.TRUE.equals(v.getActive()))
+            throw new RuntimeException("Voucher đã bị vô hiệu hóa");
+
+        LocalDate today = LocalDate.now();
+        if (today.isBefore(v.getStartDate()) || today.isAfter(v.getEndDate()))
+            throw new RuntimeException("Voucher đã hết hạn");
+
+        if (v.getTotalQuantity() != null && v.getUsedQuantity() >= v.getTotalQuantity())
+            throw new RuntimeException("Voucher đã hết lượt sử dụng");
+
+        if (v.getMinOrderValue() != null && orderTotal.compareTo(v.getMinOrderValue()) < 0)
+            throw new RuntimeException("Đơn hàng tối thiểu " + v.getMinOrderValue() + " ₫ mới dùng được mã này");
+
+        if (v.getVoucherType() != expectedType)
+            throw new RuntimeException("Mã này không phải voucher " +
+                    (expectedType == VoucherType.DISCOUNT ? "giảm giá" : "giảm ship"));
+
+        if (voucherUsageRepository.existsByVoucherIdAndUserId(v.getId(), userId))
+            throw new RuntimeException("Bạn đã sử dụng voucher này rồi");
+
+        return v;
+    }
+
+    public BigDecimal calcDiscount(Voucher v, BigDecimal orderTotal) {
+        if (v.getVoucherType() != VoucherType.DISCOUNT) return BigDecimal.ZERO;
+
+        BigDecimal discount;
+        if (v.getDiscountType() == DiscountType.PERCENTAGE && v.getDiscountPercent() != null) {
+            discount = orderTotal.multiply(v.getDiscountPercent())
+                    .divide(BigDecimal.valueOf(100));
+            if (v.getMaxDiscount() != null)
+                discount = discount.min(v.getMaxDiscount());
+        } else {
+            discount = v.getDiscountValue() != null ? v.getDiscountValue() : BigDecimal.ZERO;
+        }
+        return discount.min(orderTotal);
+    }
+
+    public BigDecimal calcShippingDiscount(Voucher v, BigDecimal shippingFee) {
+        if (v.getVoucherType() != VoucherType.SHIPPING) return BigDecimal.ZERO;
+        return v.getMaxShippingDiscount() == null ? shippingFee : v.getMaxShippingDiscount().min(shippingFee);
     }
 }

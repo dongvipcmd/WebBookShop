@@ -20,6 +20,7 @@ public class Order {
     private Long id;
 
     private Long userId;
+
     private LocalDateTime orderDate = LocalDateTime.now();
 
     // Mã giảm giá sản phẩm
@@ -33,4 +34,6 @@ public class Order {
     private BigDecimal shippingFee;       // phí ship gốc
     private BigDecimal shippingDiscount;  // ship được giảm từ shippingVoucher
     private BigDecimal finalAmount;       // tổng thanh toán cuối
+
+    private String status = "PENDING";
 }

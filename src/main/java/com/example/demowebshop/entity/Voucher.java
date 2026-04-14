@@ -30,11 +30,12 @@ public class Voucher {
     private BigDecimal maxDiscount;
 
 
+
     private BigDecimal maxShippingDiscount;  // null = miễn toàn bộ ship
 
     // Điều kiện chung
     private BigDecimal minOrderValue = BigDecimal.ZERO;
-    private Integer totalQuantity; // số lần sử dụng
+    private Integer totalQuantity;
     private Integer usedQuantity = 0;
     private LocalDate startDate;
     private LocalDate endDate;

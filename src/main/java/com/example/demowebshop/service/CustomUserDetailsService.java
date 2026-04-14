@@ -1,4 +1,5 @@
 package com.example.demowebshop.service;
+import com.example.demowebshop.config.CustomUserDetails;
 import com.example.demowebshop.entity.User;
 import com.example.demowebshop.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -16,12 +17,10 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+
         User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("Not found"));
-        return org.springframework.security.core.userdetails.User
-                .withUsername(user.getUsername())
-                .password(user.getPassword())
-                .roles(user.getRole().replace("ROLE_", ""))
-                .build();
+                .orElseThrow(() -> new UsernameNotFoundException("User không tồn tại"));
+
+        return new CustomUserDetails(user);
     }
 }

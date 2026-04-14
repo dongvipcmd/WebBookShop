@@ -1,19 +1,20 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Danh sách sách</title>
+    <title>Book List</title>
 </head>
 <body>
 
 <h2>Danh sách sách</h2>
 
-<a th:href="@{/books/create}">➕ Thêm sách</a>
+<a th:href="@{/books/create}">Thêm sách</a>
 
 <br><br>
 
-<table border="1">
+<table border="1" cellpadding="10">
     <tr>
         <th>ID</th>
+        <th>Ảnh</th>
         <th>Tên</th>
         <th>Giá</th>
         <th>Thể loại</th>
@@ -24,14 +25,23 @@
 
     <tr th:each="b : ${books}">
         <td th:text="${b.id}"></td>
+
+        <td>
+            <img th:src="${b.image} != null ? @{${b.image}} : 'https://via.placeholder.com/80'"
+                 width="80"
+                 height="100"
+                 style="object-fit: cover; border:1px solid #ccc"/>
+        </td>
+
         <td th:text="${b.name}"></td>
         <td th:text="${b.price}"></td>
         <td th:text="${b.category.name}"></td>
         <td th:text="${b.author.fullName}"></td>
         <td th:text="${b.stockQuantity}"></td>
+
         <td>
             <a th:href="@{/books/edit/{id}(id=${b.id})}">Sửa</a> |
-            <a th:href="@{/books/update-quantity/{id}(id=${b.id})}">Nhập thêm số lượng</a> |
+            <a th:href="@{/books/update-quantity/{id}(id=${b.id})}">Nhập thêm</a> |
             <a th:href="@{/books/delete/{id}(id=${b.id})}"
                onclick="return confirm('Bạn có chắc muốn xóa?')">Xóa</a>
         </td>

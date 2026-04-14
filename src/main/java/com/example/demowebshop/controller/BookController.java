@@ -4,8 +4,13 @@ import com.example.demowebshop.entity.Book;
 import com.example.demowebshop.service.BookService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 @Controller
 @RequestMapping("/books")
@@ -27,7 +32,25 @@ public class BookController {
     }
 
     @PostMapping
-    public String create(@ModelAttribute Book book){
+    public String create(@ModelAttribute Book book,
+                         @RequestParam(value = "imageFile", required = false) MultipartFile file) {
+
+        try {
+            if (file != null && !file.isEmpty()) {
+
+                String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
+
+                Path path = Paths.get("uploads/" + fileName);
+                Files.createDirectories(path.getParent());
+                Files.write(path, file.getBytes());
+
+                book.setImage("/uploads/" + fileName);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         bookService.create(book);
         return "redirect:/books";
     }
@@ -39,7 +62,24 @@ public class BookController {
     }
 
     @PostMapping("/update/{id}")
-    public String update(@PathVariable Long id, @ModelAttribute Book book){
+    public String update(@PathVariable Long id,
+                         @ModelAttribute Book book,
+                         @RequestParam(value = "imageFile", required = false) MultipartFile file){
+
+        try {
+            if (file != null && !file.isEmpty()) {
+                String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
+
+                Path path = Paths.get("uploads/" + fileName);
+                Files.createDirectories(path.getParent());
+                Files.write(path, file.getBytes());
+
+                book.setImage("/uploads/" + fileName);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         bookService.update(id, book);
         return "redirect:/books";
     }
@@ -63,7 +103,4 @@ public class BookController {
         bookService.updateQuantity(id, quantity);
         return "redirect:/books";
     }
-
-
 }
-

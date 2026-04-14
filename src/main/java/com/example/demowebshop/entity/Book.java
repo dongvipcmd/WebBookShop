@@ -23,6 +23,7 @@ public class Book {
 
     private String image;
 
+    @Column(columnDefinition = "TEXT")
     private String description;
 
     private Integer stockQuantity;
