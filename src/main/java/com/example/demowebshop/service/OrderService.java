@@ -12,7 +12,9 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -63,10 +65,26 @@ public class OrderService {
        return order;
    }
 
-   public List<OrderDetail> getOrderItems(Long orderId){
-       return orderDetailRepository.findByOrderId(orderId);
-   }
+    public List<OrderDetail> getOrderItems(Long orderId){
+        List<OrderDetail> items = orderDetailRepository.findByOrderId(orderId);
 
+        List<Long> bookIds = items.stream()
+                .map(OrderDetail::getBookId)
+                .toList();
+
+        List<Book> books = bookRepository.findAllById(bookIds);
+
+        // map bookId -> book
+        Map<Long, Book> bookMap = books.stream()
+                .collect(Collectors.toMap(Book::getId, b -> b));
+
+        // gắn vào item
+        for (OrderDetail item : items) {
+            item.setBook(bookMap.get(item.getBookId()));
+        }
+
+        return items;
+    }
     @Transactional
     public void addToCart(Long userId, HttpSession session, Long bookId, int quantity) {
 

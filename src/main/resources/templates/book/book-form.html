@@ -1,107 +1,207 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
+    <meta charset="UTF-8">
     <title>Book Form</title>
 
     <!-- Bootstrap -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
 
     <!-- Select2 -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/css/select2.min.css" rel="stylesheet"/>
 
+    <!-- Icon -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <style>
+        body {
+            background-color: #f4f7f6;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            height: 100vh;
+            background: #212529;
+            color: white;
+            position: fixed;
+            width: 240px;
+        }
+
+        .sidebar a {
+            color: #adb5bd;
+            padding: 12px 20px;
+            display: block;
+            text-decoration: none;
+        }
+
+        .sidebar a:hover,
+        .sidebar a.active {
+            background: #343a40;
+            color: #ffc107;
+            border-left: 4px solid #ffc107;
+        }
+
+        /* Main */
+        .main-content {
+            margin-left: 240px;
+            padding: 40px;
+
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* ⭐ căn giữa */
+        }
+
+        /* Form */
+        .form-container {
+            width: 100%;
+            max-width: 1000px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            padding: 30px;
+        }
+
         .preview-img {
             width: 150px;
             height: 200px;
             object-fit: cover;
+            border-radius: 10px;
             border: 1px solid #ccc;
-            margin-bottom: 10px;
         }
     </style>
 </head>
 
 <body>
 
-<div class="container mt-4">
-    <h2 class="mb-4" th:text="${book.id} == null ? 'Thêm sách' : 'Sửa sách'"></h2>
+<!-- Sidebar -->
+<div class="sidebar">
+    <div class="text-center py-4">
+        <i class="fas fa-user-shield fa-3x text-warning"></i>
+        <h5 class="mt-2 fw-bold">Admin</h5>
+    </div>
 
-    <form th:action="${book.id} == null ? @{/books} : @{/books/update/{id}(id=${book.id})}"
-          method="post"
-          enctype="multipart/form-data"
-          th:object="${book}">
+    <a href="/admin"><i class="fas fa-chart-line me-2"></i> Dashboard</a>
+    <a href="/authors"><i class="fas fa-user me-2"></i> Tác giả</a>
+    <a href="/books" class="active"><i class="fas fa-book me-2"></i> Sách</a>
+    <a href="/categories"><i class="fas fa-tags me-2"></i> Thể loại</a>
 
-        <input type="hidden" th:field="*{id}" />
+    <hr class="mx-3">
 
-        <!-- TÊN -->
-        <div class="mb-3">
-            <label class="form-label">Tên sách</label>
-            <input type="text" class="form-control" th:field="*{name}" required/>
-        </div>
+    <a th:href="@{/home}">
+        <i class="fas fa-home me-2"></i> Trang chủ
+    </a>
 
-        <!-- GIÁ -->
-        <div class="mb-3">
-            <label class="form-label">Giá</label>
-            <input type="number" class="form-control" th:field="*{price}" required/>
-        </div>
-
-        <!-- CATEGORY -->
-        <div class="mb-3">
-            <label class="form-label">Thể loại</label>
-            <select th:field="*{categoryId}" class="form-select select2" required>
-                <option value="">-- Chọn thể loại --</option>
-                <option th:each="c : ${categories}"
-                        th:value="${c.id}"
-                        th:text="${c.name}">
-                </option>
-            </select>
-        </div>
-
-        <!-- AUTHOR -->
-        <div class="mb-3">
-            <label class="form-label">Tác giả</label>
-            <select th:field="*{authorId}" class="form-select select2" required>
-                <option value="">-- Chọn tác giả --</option>
-                <option th:each="a : ${authors}"
-                        th:value="${a.id}"
-                        th:text="${a.fullName}">
-                </option>
-            </select>
-        </div>
-
-        <div class="mb-3">
-            <label class="form-label">Mô tả</label>
-            <textarea class="form-control" th:field="*{description}" rows="3"></textarea>
-        </div>
-
-        <div class="mb-3">
-            <label class="form-label">Số lượng</label>
-            <input type="number" class="form-control" th:field="*{stockQuantity}" required/>
-        </div>
-
-        <div class="mb-3">
-            <label class="form-label">Ảnh sách</label>
-
-            <div>
-                <img id="preview"
-                     th:src="${book.image} != null ? @{${book.image}} : 'https://via.placeholder.com/150'"
-                     class="preview-img"/>
-            </div>
-
-            <input type="file" name="imageFile" class="form-control" accept="image/*"
-                   onchange="previewImage(event)">
-        </div>
-
-        <button type="submit" class="btn btn-primary">Lưu</button>
-        <a th:href="@{/books}" class="btn btn-secondary">Quay lại</a>
-
+    <!-- Logout -->
+    <form th:action="@{/logout}" method="post" class="px-3">
+        <button type="submit" class="btn btn-link text-danger text-decoration-none">
+            <i class="fas fa-sign-out-alt me-2"></i> Đăng xuất
+        </button>
     </form>
 </div>
 
+<!-- Main -->
+<div class="main-content">
+
+    <!-- Title -->
+    <div class="w-100 mb-4" style="max-width: 1000px;">
+        <h2 class="fw-bold">
+            <i class="fas fa-book text-primary me-2"></i>
+            <span th:text="${book.id} == null ? 'Thêm sách' : 'Sửa sách'"></span>
+        </h2>
+    </div>
+
+    <!-- Form -->
+    <div class="form-container">
+
+        <form th:action="${book.id} == null ? @{/books} : @{/books/update/{id}(id=${book.id})}"
+              method="post"
+              enctype="multipart/form-data"
+              th:object="${book}">
+
+            <input type="hidden" th:field="*{id}" />
+
+            <!-- Tên -->
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Tên sách</label>
+                <input type="text" class="form-control" th:field="*{name}" required/>
+            </div>
+
+            <!-- Giá -->
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Giá</label>
+                <input type="number" class="form-control" th:field="*{price}" required/>
+            </div>
+
+            <!-- Thể loại -->
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Thể loại</label>
+                <select th:field="*{categoryId}" class="form-select select2" required>
+                    <option value="">-- Chọn thể loại --</option>
+                    <option th:each="c : ${categories}"
+                            th:value="${c.id}"
+                            th:text="${c.name}">
+                    </option>
+                </select>
+            </div>
+
+            <!-- Tác giả -->
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Tác giả</label>
+                <select th:field="*{authorId}" class="form-select select2" required>
+                    <option value="">-- Chọn tác giả --</option>
+                    <option th:each="a : ${authors}"
+                            th:value="${a.id}"
+                            th:text="${a.fullName}">
+                    </option>
+                </select>
+            </div>
+
+            <!-- Mô tả -->
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Mô tả</label>
+                <textarea class="form-control" th:field="*{description}" rows="3"></textarea>
+            </div>
+
+            <!-- Số lượng -->
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Số lượng</label>
+                <input type="number" class="form-control" th:field="*{stockQuantity}" required/>
+            </div>
+
+            <!-- Ảnh -->
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Ảnh sách</label>
+
+                <div class="mb-2">
+                    <img id="preview"
+                         th:src="${book.image} != null ? @{${book.image}} : 'https://via.placeholder.com/150'"
+                         class="preview-img"/>
+                </div>
+
+                <input type="file" name="imageFile" class="form-control"
+                       accept="image/*" onchange="previewImage(event)">
+            </div>
+
+            <!-- Buttons -->
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save me-1"></i> Lưu
+                </button>
+
+                <a th:href="@{/books}" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left me-1"></i> Quay lại
+                </a>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+<!-- JS -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.1.0-rc.0/js/select2.min.js"></script>
 
 <script>
-    // Select2
     $(document).ready(function() {
         $('.select2').select2({
             placeholder: "Chọn...",
@@ -109,7 +209,6 @@
             width: '100%'
         });
     });
-
 
     function previewImage(event) {
         const reader = new FileReader();

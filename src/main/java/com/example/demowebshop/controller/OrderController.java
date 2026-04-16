@@ -4,6 +4,7 @@ import com.example.demowebshop.config.CustomUserDetails;
 import com.example.demowebshop.dto.CheckoutRequest;
 import com.example.demowebshop.entity.Order;
 import com.example.demowebshop.entity.User;
+import com.example.demowebshop.service.CategoryService;
 import com.example.demowebshop.service.OrderService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;

@@ -29,4 +29,7 @@ public class OrderDetail {
 
     // Thành tiền = unitPrice * quantity — lưu sẵn để tránh tính lại
     private BigDecimal finalPrice;
+
+    @Transient
+    private Book book;
 }

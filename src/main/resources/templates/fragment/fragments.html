@@ -58,8 +58,7 @@
             <div class="navbar-nav align-items-center">
                 <a class="nav-link position-relative me-3" th:href="@{/cart}">
                     <i class="bi bi-cart3 fs-5"></i>
-                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">0</span>
-                </a>
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">0</span> </a>
 
                 <div sec:authorize="isAnonymous()" class="d-flex gap-2">
                     <a th:href="@{/login}" class="btn btn-outline-light btn-sm">Đăng nhập</a>

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Quản lý Tác giả</title>
+
+    <!-- Bootstrap + Icon -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        body {
+            background-color: #f4f7f6;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            height: 100vh;
+            background: #212529;
+            color: white;
+            position: fixed;
+            width: 240px;
+        }
+
+        .sidebar a {
+            color: #adb5bd;
+            text-decoration: none;
+            padding: 12px 20px;
+            display: block;
+            transition: 0.3s;
+        }
+
+        .sidebar a:hover,
+        .sidebar a.active {
+            background: #343a40;
+            color: #ffc107;
+            border-left: 4px solid #ffc107;
+        }
+
+        /* Main */
+        .main-content {
+            margin-left: 240px;
+            padding: 40px;
+        }
+
+        /* Box */
+        .table-container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            padding: 25px;
+        }
+
+        /* Bio fix */
+        .bio {
+            max-width: 300px;
+            display: -webkit-box;
+            -webkit-line-clamp: 3; /* 3 dòng */
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .text-truncate-custom {
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            max-width: 200px;
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- Sidebar -->
+<div class="sidebar">
+    <div class="text-center py-4">
+        <i class="fas fa-user-shield fa-3x text-warning"></i>
+        <h5 class="mt-2 text-uppercase fw-bold">Admin</h5>
+    </div>
+
+    <a href="/admin"><i class="fas fa-chart-line me-2"></i> Dashboard</a>
+    <a href="/authors" class="active"><i class="fas fa-user me-2"></i> Tác giả</a>
+    <a href="/books"><i class="fas fa-book me-2"></i> Sản phẩm</a>
+    <a href="/categories"><i class="fas fa-tags me-2"></i> Thể loại</a>
+
+    <hr class="mx-3">
+
+    <a th:href="@{/}">
+        <i class="fas fa-home me-2"></i> Trang chủ
+    </a>
+    <form th:action="@{/logout}" method="post" style="display:inline;">
+        <button type="submit" class="text-danger border-0 bg-transparent">
+            <i class="fas fa-sign-out-alt me-2"></i> Đăng xuất
+        </button>
+    </form>
+</div>
+
+<!-- Main -->
+<div class="main-content">
+
+    <!-- Header -->
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

@@ -3,6 +3,7 @@ package com.example.demowebshop.controller;
 import com.example.demowebshop.entity.User;
 import com.example.demowebshop.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -42,5 +43,20 @@ public class AuthController {
         redirectAttributes.addFlashAttribute("successMessage", "Đăng ký thành công!");
 
         return "redirect:/login";
+    }
+
+    @GetMapping("/redirect")
+    public String redirect(Authentication authentication) {
+
+        if (authentication != null) {
+            boolean isAdmin = authentication.getAuthorities().stream()
+                    .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+
+            if (isAdmin) {
+                return "redirect:/admin";
+            }
+        }
+
+        return "redirect:/home";
     }
 }

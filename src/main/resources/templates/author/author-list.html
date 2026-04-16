@@ -1,37 +1,170 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <title>Danh sách tác giả</title>
+  <meta charset="UTF-8">
+  <title>Quản lý Tác giả</title>
+
+  <!-- Bootstrap + Icon -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    body {
+        background-color: #f4f7f6;
+    }
+
+    /* Sidebar */
+    .sidebar {
+        height: 100vh;
+        background: #212529;
+        color: white;
+        position: fixed;
+        width: 240px;
+    }
+
+    .sidebar a {
+        color: #adb5bd;
+        text-decoration: none;
+        padding: 12px 20px;
+        display: block;
+        transition: 0.3s;
+    }
+
+    .sidebar a:hover,
+    .sidebar a.active {
+        background: #343a40;
+        color: #ffc107;
+        border-left: 4px solid #ffc107;
+    }
+
+    /* Main */
+    .main-content {
+        margin-left: 240px;
+        padding: 40px;
+    }
+
+    /* Box */
+    .table-container {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        padding: 25px;
+    }
+
+    /* Bio fix */
+    .bio {
+    max-width: 400px;       /* có thể chỉnh 300–500 */
+    white-space: normal;    /* cho xuống dòng */
+    word-break: break-word; /* tránh tràn */
+    line-height: 1.5;
+  }
+
+
+    .text-truncate-custom {
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        max-width: 200px;
+    }
+  </style>
 </head>
+
 <body>
 
-<h2>Danh sách tác giả</h2>
+<!-- Sidebar -->
+<div class="sidebar">
+  <div class="text-center py-4">
+    <i class="fas fa-user-shield fa-3x text-warning"></i>
+    <h5 class="mt-2 text-uppercase fw-bold">Admin</h5>
+  </div>
 
-<a th:href="@{/authors/create}">Thêm tác giả</a>
+  <a href="/admin"><i class="fas fa-chart-line me-2"></i> Dashboard</a>
+  <a href="/authors" class="active"><i class="fas fa-user me-2"></i> Tác giả</a>
+  <a href="/books"><i class="fas fa-book me-2"></i> Sản phẩm</a>
+  <a href="/categories"><i class="fas fa-tags me-2"></i> Thể loại</a>
 
-<br><br>
+  <hr class="mx-3">
 
-<table border="1">
-  <tr>
-    <th>ID</th>
-    <th>Tên</th>
-    <th>Ngày sinh</th>
-    <th>Tiểu sử</th>
-    <th>Hành động</th>
-  </tr>
+  <a th:href="@{/home}">
+    <i class="fas fa-home me-2"></i> Trang chủ
+  </a>
+  <a href="/logout" class="text-danger"><i class="fas fa-sign-out-alt me-2"></i> Đăng xuất</a>
+</div>
 
-  <tr th:each="a : ${authors}">
-    <td th:text="${a.id}"></td>
-    <td th:text="${a.fullName}"></td>
-    <td th:text="${a.dob}"></td>
-    <td th:text="${a.bio}"></td>
-    <td>
-      <a th:href="@{/authors/edit/{id}(id=${a.id})}">Sửa</a> |
-      <a th:href="@{/authors/delete/{id}(id=${a.id})}"
-         onclick="return confirm('Bạn có chắc muốn xóa?')">Xóa</a>
-    </td>
-  </tr>
-</table>
+<!-- Main -->
+<div class="main-content">
+
+  <!-- Header -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold text-dark">
+      <i class="fas fa-user text-primary me-2"></i> Quản lý Tác giả
+    </h2>
+
+    <a th:href="@{/authors/create}" class="btn btn-primary">
+      <i class="fas fa-plus me-1"></i> Thêm tác giả
+    </a>
+  </div>
+
+  <!-- Table -->
+  <div class="table-container">
+
+    <table class="table table-hover align-middle">
+      <thead class="table-light">
+      <tr>
+        <th>ID</th>
+        <th>Tên</th>
+        <th>Ngày sinh</th>
+        <th>Tiểu sử</th>
+        <th class="text-center">Hành động</th>
+      </tr>
+      </thead>
+
+      <tbody>
+      <tr th:each="a : ${authors}">
+        <td class="text-muted">#<span th:text="${a.id}"></span></td>
+
+        <td class="fw-semibold text-dark"
+            th:text="${a.fullName}">
+        </td>
+
+        <td th:text="${#temporals.format(a.dob, 'd-M-yyyy')}"></td>
+
+        <td>
+          <div class="bio" th:text="${a.bio}"></div>
+        </td>
+
+        <td class="text-center">
+          <div class="btn-group shadow-sm">
+
+            <a th:href="@{/authors/edit/{id}(id=${a.id})}"
+               class="btn btn-sm btn-light border"
+               title="Sửa">
+              <i class="fas fa-pen text-primary"></i>
+            </a>
+
+            <a th:href="@{/authors/delete/{id}(id=${a.id})}"
+               class="btn btn-sm btn-light border"
+               onclick="return confirm('Xác nhận xóa?')"
+               title="Xóa">
+              <i class="fas fa-trash text-danger"></i>
+            </a>
+
+          </div>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+
+    <!-- Empty -->
+    <div th:if="${#lists.isEmpty(authors)}" class="text-center py-5">
+      <i class="fas fa-user-slash fa-3x text-light mb-3"></i>
+      <p class="text-muted">Chưa có tác giả nào.</p>
+    </div>
+
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>
