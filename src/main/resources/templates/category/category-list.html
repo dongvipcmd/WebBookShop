@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Quản lý Thể loại</title>
+
+  <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Icon -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    body {
+        background-color: #f4f7f6;
+    }
+
+    /* Sidebar */
+    .sidebar {
+        height: 100vh;
+        background: #212529;
+        color: white;
+        position: fixed;
+        width: 240px;
+    }
+
+    .sidebar a {
+        color: #adb5bd;
+        padding: 12px 20px;
+        display: block;
+        text-decoration: none;
+    }
+
+    .sidebar a:hover,
+    .sidebar a.active {
+        background: #343a40;
+        color: #ffc107;
+        border-left: 4px solid #ffc107;
+    }
+
+    /* Main */
+    .main-content {
+        margin-left: 240px;
+        padding: 40px;
+    }
+
+    /* Box */
+    .table-container {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        padding: 25px;
+    }
+
+    .text-truncate-custom {
+        max-width: 300px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+  </style>
+</head>
+
+<body>
+
+<!-- Sidebar -->
+<div class="sidebar">
+  <div class="text-center py-4">
+    <i class="fas fa-user-shield fa-3x text-warning"></i>
+    <h5 class="mt-2 fw-bold">Admin</h5>
+  </div>
+
+  <a href="/admin"><i class="fas fa-chart-line me-2"></i> Dashboard</a>
+  <a href="/authors"><i class="fas fa-user me-2"></i> Tác giả</a>
+  <a href="/books"><i class="fas fa-book me-2"></i> Sách</a>
+  <a href="/categories" class="active"><i class="fas fa-tags me-2"></i> Thể loại</a>
+
+  <hr class="mx-3">
+
+  <a th:href="@{/home}">
+    <i class="fas fa-home me-2"></i> Trang chủ
+  </a>
+
+  <!-- Logout -->
+  <form th:action="@{/logout}" method="post" class="px-3">
+    <button type="submit" class="btn btn-link text-danger text-decoration-none">
+      <i class="fas fa-sign-out-alt me-2"></i> Đăng xuất
+    </button>
+  </form>
+</div>
+
+<!-- Main -->
+<div class="main-content">
+
+  <!-- Header -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold">
+      <i class="fas fa-tags text-primary me-2"></i> Quản lý Thể loại
+    </h2>
+
+    <a th:href="@{/categories/create}" class="btn btn-primary">
+      <i class="fas fa-plus me-1"></i> Thêm thể loại
+    </a>
+  </div>
+
+  <!-- Table -->
+  <div class="table-container">
+
+    <table class="table table-hover align-middle">
+      <thead class="table-light">
+      <tr>
+        <th>ID</th>
+        <th>Tên</th>
+        <th>Mô tả</th>
+        <th class="text-center">Hành động</th>
+      </tr>
+      </thead>
+
+      <tbody>
+      <tr th:each="c : ${categories}">
+        <td class="text-muted">#<span th:text="${c.id}"></span></td>
+
+        <td class="fw-semibold" th:text="${c.name}"></td>
+
+        <td>
+          <div class="text-truncate-custom" th:text="${c.description}"></div>
+        </td>
+
+        <td class="text-center">
+          <div class="btn-group">
+
+            <a th:href="@{/categories/edit/{id}(id=${c.id})}"
+               class="btn btn-sm btn-light border">
+              <i class="fas fa-pen text-primary"></i>
+            </a>
+
+            <a th:href="@{/categories/delete/{id}(id=${c.id})}"
+               class="btn btn-sm btn-light border"
+               onclick="return confirm('Bạn có chắc muốn xóa?')">
+              <i class="fas fa-trash text-danger"></i>
+            </a>
+
+          </div>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+
+    <!-- Empty -->
+    <div th:if="${#lists.isEmpty(categories)}" class="text-center py-5">
+      <i class="fas fa-tags fa-3x text-light mb-3"></i>
+      <p class="text-muted">Chưa có thể loại nào.</p>
+    </div>
+
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

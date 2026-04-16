@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Form Voucher</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+<div class="container mt-5">
+
+  <div class="card shadow">
+    <div class="card-body">
+
+      <h3 class="mb-4"
+          th:text="${voucher.id == null ? 'Tạo Voucher' : 'Sửa Voucher'}">
+      </h3>
+
+      <form th:action="${voucher.id == null} ? @{/vouchers} : @{/vouchers/update/{id}(id=${voucher.id})}"
+            th:object="${voucher}"
+            method="post">
+
+        <div class="row">
+
+          <!-- CODE -->
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Mã Voucher</label>
+            <input type="text" class="form-control" th:field="*{code}" required>
+          </div>
+
+          <!-- TYPE -->
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Loại Voucher</label>
+            <select class="form-select" th:field="*{voucherType}" id="voucherType">
+              <option value="DISCOUNT">Giảm giá sản phẩm</option>
+              <option value="SHIPPING">Giảm phí vận chuyển</option>
+            </select>
+          </div>
+
+          <!-- DISCOUNT TYPE -->
+          <div class="col-md-6 mb-3 discount-field">
+            <label class="form-label">Loại giảm giá</label>
+            <select class="form-select" th:field="*{discountType}">
+              <option value="PERCENTAGE">Theo %</option>
+              <option value="FIXED">Số tiền cố định</option>
+            </select>
+          </div>
+
+          <!-- DISCOUNT VALUE -->
+          <div class="col-md-6 mb-3 discount-field">
+            <label class="form-label">Giảm tiền (₫)</label>
+            <input type="number" step="0.01" class="form-control" th:field="*{discountValue}">
+          </div>
+
+          <!-- DISCOUNT PERCENT -->
+          <div class="col-md-6 mb-3 discount-field">
+            <label class="form-label">Giảm (%)</label>
+            <input type="number" step="0.01" class="form-control" th:field="*{discountPercent}">
+          </div>
+
+          <!-- MAX DISCOUNT -->
+          <div class="col-md-6 mb-3 discount-field">
+            <label class="form-label">Giảm tối đa</label>
+            <input type="number" step="0.01" class="form-control" th:field="*{maxDiscount}">
+          </div>
+
+          <!-- SHIPPING -->
+          <div class="col-md-6 mb-3 shipping-field">
+            <label class="form-label">Giảm phí ship tối đa</label>
+            <input type="number" step="0.01" class="form-control" th:field="*{maxShippingDiscount}">
+          </div>
+
+          <!-- COMMON -->
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Đơn tối thiểu</label>
+            <input type="number" step="0.01" class="form-control" th:field="*{minOrderValue}">
+          </div>
+
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Số lượng tối đa</label>
+            <input type="number" class="form-control" th:field="*{totalQuantity}">
+          </div>
+
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Ngày bắt đầu</label>
+            <input type="date" class="form-control" th:field="*{startDate}">
+          </div>
+
+          <div class="col-md-6 mb-3">
+            <label class="form-label">Ngày kết thúc</label>
+            <input type="date" class="form-control" th:field="*{endDate}">
+          </div>
+
+          <div class="col-md-6 mb-3 form-check">
+            <input type="checkbox" class="form-check-input" th:field="*{active}">
+            <label class="form-check-label">Đang hoạt động</label>
+          </div>
+
+        </div>
+
+        <div class="d-flex justify-content-between mt-4">
+          <a th:href="@{/vouchers}" class="btn btn-secondary">Quay lại</a>
+          <button type="submit" class="btn btn-success">Lưu</button>
+        </div>
+
+      </form>
+
+    </div>
+  </div>
+
+</div>
+
+<script>
+  function toggleFields() {
+    const type = document.getElementById("voucherType").value;
+
+    document.querySelectorAll(".discount-field").forEach(el => {
+      el.style.display = (type === "DISCOUNT") ? "block" : "none";
+    });
+
+    document.querySelectorAll(".shipping-field").forEach(el => {
+      el.style.display = (type === "SHIPPING") ? "block" : "none";
+    });
+  }
+
+  document.getElementById("voucherType").addEventListener("change", toggleFields);
+
+
+  window.onload = toggleFields;
+</script>
+
+</body>
+</html>
