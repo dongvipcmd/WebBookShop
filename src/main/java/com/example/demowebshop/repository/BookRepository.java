@@ -21,7 +21,7 @@ public interface BookRepository extends JpaRepository<Book, Long> {
     List<Book> filterBooks(@Param("categoryId") Long categoryId,
                            @Param("authorId") Long authorId,
                            @Param("maxPrice") BigDecimal maxPrice,
-                           @Param("keyword") String keyword, // THÊM DÒNG NÀY
+                           @Param("keyword") String keyword,
                            Sort sort);
 
     List<Book> findTop5ByNameContainingIgnoreCaseOrderByIdDesc(String keyword);

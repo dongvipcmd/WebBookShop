@@ -17,11 +17,15 @@
 <div th:replace="~{fragment/fragments :: navbar}"></div>
 
 <div class="container mt-4">
-    <h2 class="mb-4 text-center">Danh sách sản phẩm</h2>
+    <h2 th:if="${currentKeyword == null or currentKeyword.isEmpty()}" class="mb-4 text-center">Danh sách sản phẩm</h2>
+    <h2 th:if="${currentKeyword != null and !currentKeyword.isEmpty()}" class="mb-4 text-center">
+        Kết quả tìm kiếm cho: "<span th:text="${currentKeyword}" class="text-primary"></span>"
+    </h2>
 
     <div class="row">
         <div class="col-md-3">
             <form action="/shop" method="get" class="card p-3 shadow-sm">
+                <input type="hidden" name="keyword" th:if="${currentKeyword != null and !currentKeyword.isEmpty()}" th:value="${currentKeyword}" />
                 <h5 class="mb-3">Bộ lọc sản phẩm</h5>
 
                 <div class="mb-3">

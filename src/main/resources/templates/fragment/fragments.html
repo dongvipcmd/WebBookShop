@@ -46,14 +46,77 @@
                 </li>
             </ul>
 
-            <form class="d-flex me-3" role="search">
+            <form class="d-flex me-3 position-relative" role="search" th:action="@{/shop}" method="get">
                 <div class="input-group">
-                    <input class="form-control form-control-sm" type="search" placeholder="Tìm tên sách...">
+                    <input class="form-control form-control-sm" type="search" name="keyword" id="searchInput" placeholder="Tìm tên sách..." autocomplete="off">
                     <button class="btn btn-outline-light btn-sm" type="submit">
                         <i class="bi bi-search"></i>
                     </button>
                 </div>
+
+                <ul id="searchResults" class="dropdown-menu w-100 shadow" style="display: none; position: absolute; top: 100%; left: 0; z-index: 1050; padding: 0; max-height: 400px; overflow-y: auto;">
+                </ul>
             </form>
+
+            <script th:inline="javascript">
+                document.addEventListener("DOMContentLoaded", function() {
+                    const searchInput = document.getElementById("searchInput");
+                    const searchResults = document.getElementById("searchResults");
+                    let timeout = null;
+
+                    if (searchInput) {
+                        searchInput.addEventListener("input", function() {
+                            clearTimeout(timeout);
+                            const keyword = this.value.trim();
+
+                            // Xoá nội dung thì ẩn dropdown
+                            if (keyword.length === 0) {
+                                searchResults.style.display = "none";
+                                return;
+                            }
+
+                            // Debounce 300ms: Đợi người dùng ngừng gõ 300ms mới gọi API để đỡ quá tải
+                            timeout = setTimeout(() => {
+                                fetch(`/shop/api/search?keyword=${encodeURIComponent(keyword)}`)
+                                    .then(response => response.json())
+                                    .then(data => {
+                                        searchResults.innerHTML = "";
+
+                                        if (data.length === 0) {
+                                            searchResults.innerHTML = '<li class="dropdown-item text-muted text-center py-2">Không tìm thấy sách</li>';
+                                        } else {
+                                            data.forEach(book => {
+                                                const li = document.createElement("li");
+                                                // Format giá tiền theo định dạng Việt Nam
+                                                const priceFormat = new Intl.NumberFormat('vi-VN').format(book.price) + ' ₫';
+                                                const imageSrc = book.image ? book.image : 'https://via.placeholder.com/50';
+
+                                                li.innerHTML = `
+                                                    <a class="dropdown-item d-flex align-items-center py-2 border-bottom" href="/shop/${book.id}">
+                                                        <img src="${imageSrc}" style="width: 40px; height: 55px; object-fit: cover; margin-right: 12px; border-radius: 4px;">
+                                                        <div style="overflow: hidden;">
+                                                            <div class="text-truncate fw-semibold" style="max-width: 250px; font-size: 14px;">${book.name}</div>
+                                                            <div class="text-danger small fw-bold">${priceFormat}</div>
+                                                        </div>
+                                                    </a>`;
+                                                searchResults.appendChild(li);
+                                            });
+                                        }
+                                        searchResults.style.display = "block";
+                                    })
+                                    .catch(err => console.error("Lỗi tìm kiếm:", err));
+                            }, 300);
+                        });
+
+                        // Ẩn dropdown khi click ra vùng khác ngoài ô input và kết quả
+                        document.addEventListener("click", function(e) {
+                            if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) {
+                                searchResults.style.display = "none";
+                            }
+                        });
+                    }
+                });
+            </script>
 
             <div class="navbar-nav align-items-center">
                 <a class="nav-link position-relative me-3" th:href="@{/cart}">
