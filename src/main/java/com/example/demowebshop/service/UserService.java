@@ -42,16 +42,20 @@ public class UserService {
         return null;
     }
 
-    public User changePassword(Long id, String oldPassword, String newPassword) {
+    public User changePassword(Long id, String oldPassword, String newPassword, String confirmPassword) {
         Optional<User> existingUser = userRepository.findById(id);
         if (existingUser.isPresent()) {
             User user = existingUser.get();
             if (passwordEncoder.matches(oldPassword, user.getPassword())) {
-                user.setPassword(passwordEncoder.encode(newPassword));
-                return userRepository.save(user);
+                if (newPassword.equals(confirmPassword)) {
+                    user.setPassword(passwordEncoder.encode(newPassword));
+                    return userRepository.save(user);
+                }
             }
+             return null;
         }
         return null;
     }
 
 }
+

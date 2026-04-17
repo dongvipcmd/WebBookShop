@@ -6,6 +6,8 @@ import lombok.Setter;
 
 import java.time.LocalDate;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 @Entity
 @Getter
 @Setter
@@ -26,6 +28,7 @@ public class User {
 
     private String address;
 
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate dob;
 
     private String phoneNumber;
