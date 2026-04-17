@@ -3,10 +3,66 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Book for life</title>
+    <title>Book for life - Trang Chủ</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <link rel="stylesheet" th:href="@{/css/style.css}">
+    <style>
+        .section-title {
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            color: #555;
+            text-transform: uppercase;
+            margin: 40px 0 20px 0;
+            border-bottom: 2px solid #e3001b;
+            display: inline-block;
+            padding-bottom: 5px;
+        }
+        .title-wrapper {
+            text-align: center;
+        }
+        .book-card {
+            transition: transform 0.3s ease;
+            cursor: pointer;
+            text-align: center;
+        }
+        .book-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1) !important;
+        }
+        .book-img {
+            height: 280px;
+            object-fit: cover;
+        }
+        .book-title {
+            font-size: 15px;
+            font-weight: 600;
+            margin-top: 10px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            height: 45px;
+        }
+        .book-price {
+            color: #e3001b;
+            font-weight: bold;
+            font-size: 16px;
+        }
+        .see-more-link {
+            text-align: right;
+            margin-top: 15px;
+        }
+        .see-more-link a {
+            color: #e3001b;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .see-more-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
 
@@ -22,20 +78,116 @@
 </header>
 
 <div class="container my-5">
-    <h3 class="mb-4">Sách mới nhất</h3>
-    <div class="row row-cols-1 row-cols-md-4 g-4">
-        <div class="col">
-            <div class="card h-100 shadow-sm">
-                <img src="https://via.placeholder.com/200x280" class="card-img-top" alt="Book Cover">
-                <div class="card-body text-center">
-                    <h5 class="card-title fw-bold">Tên cuốn sách</h5>
-                    <p class="text-danger fw-semibold">150.000đ</p>
-                    <button class="btn btn-outline-dark btn-sm">Thêm vào giỏ</button>
+
+    <div class="title-wrapper"><h2 class="section-title">SÁCH MỚI NHẤT</h2></div>
+    <div class="row row-cols-2 row-cols-md-5 g-4">
+        <div class="col" th:each="book : ${newBooks}">
+            <div class="card h-100 shadow-sm book-card" th:onclick="|window.location.href='/shop/${book.id}'|">
+                <img th:src="${book.image != null} ? ${book.image} : 'https://via.placeholder.com/200x280'" class="card-img-top book-img" alt="Book Cover">
+                <div class="card-body">
+                    <h5 class="card-title book-title" th:text="${book.name}">Tên sách</h5>
+                    <p class="book-price" th:text="${#numbers.formatDecimal(book.price, 0, 'COMMA', 0, 'POINT')} + ' đ'"></p>
                 </div>
             </div>
         </div>
     </div>
+    <div class="see-more-link">
+        <a href="/shop?sortBy=newest">Xem thêm >></a>
+    </div>
 </div>
+
+    <div style="width: 100%; margin: 0; padding: 0;">
+        <img th:src="@{/images/hot-banner.jpg}"
+             alt="Hot Banner"
+             style="width: 100%; height: 200px; object-fit: cover; display: block;">
+    </div>
+
+    <div class="container my-5">
+
+    <div th:if="${not #lists.isEmpty(bestSellerBooks)}">
+        <div class="title-wrapper"><h2 class="section-title">SÁCH BÁN CHẠY</h2></div>
+        <div class="row row-cols-2 row-cols-md-5 g-4">
+            <div class="col" th:each="book : ${bestSellerBooks}">
+                <div class="card h-100 shadow-sm book-card" th:onclick="|window.location.href='/shop/${book.id}'|">
+                    <img th:src="${book.image != null} ? ${book.image} : 'https://via.placeholder.com/200x280'" class="card-img-top book-img" alt="Book Cover">
+                    <div class="card-body">
+                        <h5 class="card-title book-title" th:text="${book.name}">Tên sách</h5>
+                        <p class="book-price" th:text="${#numbers.formatDecimal(book.price, 0, 'COMMA', 0, 'POINT')} + ' đ'"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="see-more-link">
+            <a href="/shop?sortBy=bestSelling">Xem thêm >></a>
+        </div>
+    </div>
+    </div>
+
+</div>
+
+    <div style="width: 100%; margin: 0; padding: 0;">
+        <img th:src="@{/images/manga_banner.jpg}"
+             alt="Manga Banner"
+             style="width: 100%; height: 200px; object-fit: cover; display: block;">
+    </div>
+
+<div class="container my-5">
+
+    <div class="title-wrapper">
+        <h2 class="section-title">MANGA</h2>
+    </div>
+
+    <div class="row row-cols-2 row-cols-md-5 g-4">
+        <div class="col" th:each="book : ${mangaBooks}">
+            <div class="card h-100 shadow-sm book-card"
+                 th:onclick="|window.location.href='/shop/${book.id}'|">
+
+                <img th:src="${book.image != null} ? ${book.image} : 'https://via.placeholder.com/200x280'"
+                     class="card-img-top book-img"
+                     alt="Book Cover">
+
+                <div class="card-body">
+                    <h5 class="card-title book-title"
+                        th:text="${book.name}">Tên sách</h5>
+
+                    <p class="book-price"
+                       th:text="${#numbers.formatDecimal(book.price, 0, 'COMMA', 0, 'POINT')} + ' đ'">
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="see-more-link">
+        <a th:href="@{/shop(categoryId=${12}, sortBy='newest')}">Xem thêm >></a>
+    </div>
+
+</div>
+
+    <div class="container my-5">
+
+    <div th:each="entry : ${booksByTopCategories}"
+         th:if="${entry.key.name != 'Manga'}">
+        <div class="title-wrapper"><h2 class="section-title" th:text="${entry.key.name}">TÊN THỂ LOẠI</h2></div>
+        <div class="row row-cols-2 row-cols-md-5 g-4">
+            <div class="col" th:each="book : ${entry.value}">
+                <div class="card h-100 shadow-sm book-card" th:onclick="|window.location.href='/shop/${book.id}'|">
+                    <img th:src="${book.image != null} ? ${book.image} : 'https://via.placeholder.com/200x280'" class="card-img-top book-img" alt="Book Cover">
+                    <div class="card-body">
+                        <h5 class="card-title book-title" th:text="${book.name}">Tên sách</h5>
+                        <p class="book-price" th:text="${#numbers.formatDecimal(book.price, 0, 'COMMA', 0, 'POINT')} + ' đ'"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="see-more-link">
+            <a th:href="@{/shop(categoryId=${entry.key.id}, sortBy='newest')}">Xem thêm >></a>
+        </div>
+    </div>
+
+</div>
+
+<div th:replace="~{fragment/footer :: footer}"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>

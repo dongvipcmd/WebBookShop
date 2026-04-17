@@ -39,4 +39,8 @@ public class CategoryService {
         return categoryRepository.findAll();
     }
 
+    public List<Category> getTop3Categories() {
+        return categoryRepository.findTop3CategoriesWithMostBooks();
+    }
+
 }

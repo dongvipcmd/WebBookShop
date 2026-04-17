@@ -4,6 +4,8 @@ import com.example.demowebshop.entity.Book;
 import com.example.demowebshop.repository.BookRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.data.domain.Sort;
+import java.math.BigDecimal;
 
 import java.util.List;
 
@@ -56,9 +58,45 @@ public class BookService {
         bookRepository.save(book);
     }
 
-    public void updateImage(Long id, String imagePath) {
-        Book book = getById(id);
-        book.setImage(imagePath);
-        bookRepository.save(book);
+    public List<Book> filterBooks(Long categoryId, Long authorId, BigDecimal maxPrice, String keyword, String sortBy) {
+        // Mặc định là mới nhất (sắp xếp theo id giảm dần)
+        Sort sort = Sort.by(Sort.Direction.DESC, "id");
+
+        if ("priceAsc".equals(sortBy)) {
+            sort = Sort.by(Sort.Direction.ASC, "price"); // Giá thấp nhất
+        } else if ("priceDesc".equals(sortBy)) {
+            sort = Sort.by(Sort.Direction.DESC, "price"); // Giá cao nhất
+        } else if ("bestSelling".equals(sortBy)) {
+            // Lưu ý: Cần thêm thuộc tính 'soldQuantity' vào entity Book để dùng được tính năng này
+            // sort = Sort.by(Sort.Direction.DESC, "soldQuantity");
+        }
+
+        return bookRepository.filterBooks(categoryId, authorId, maxPrice,keyword, sort);
+    }
+
+    public List<Book> getTop5Newest() {
+        return bookRepository.findTop5ByOrderByIdDesc();
+    }
+
+    public List<Book> getTop5BestSellers() {
+        return bookRepository.findTop5BestSellers();
+    }
+
+    public List<Book> getTop5ByCategory(Long categoryId) {
+        return bookRepository.findTop5ByCategoryIdOrderByIdDesc(categoryId);
+    }
+
+    public List<Book> searchLive(String keyword) {
+        return bookRepository.findTop5ByNameContainingIgnoreCaseOrderByIdDesc(keyword);
+    }
+
+//    public void updateImage(Long id, String imagePath) {
+//        Book book = getById(id);
+//        book.setImage(imagePath);
+//        bookRepository.save(book);
+//    }
+
+    public List<Book> getTop5Manga() {
+        return bookRepository.findTop5ByName("MANGA");
     }
 }

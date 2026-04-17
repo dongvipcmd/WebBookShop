@@ -1,13 +1,16 @@
 package com.example.demowebshop.controller;
 
 import com.example.demowebshop.entity.Book;
+import com.example.demowebshop.service.AuthorService;
 import com.example.demowebshop.service.BookService;
+import com.example.demowebshop.service.CategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -18,6 +21,8 @@ import java.nio.file.Paths;
 public class BookController {
 
     private final BookService bookService;
+    private final CategoryService categoryService;
+    private final AuthorService authorService;
 
     @GetMapping
     public String list(Model model){
@@ -114,4 +119,6 @@ public class BookController {
         bookService.updateQuantity(id, quantity);
         return "redirect:/books";
     }
+
+
 }
