@@ -37,4 +37,15 @@ public interface BookRepository extends JpaRepository<Book, Long> {
             "GROUP BY b.id " +
             "ORDER BY SUM(od.quantity) DESC LIMIT 5", nativeQuery = true)
     List<Book> findTop5BestSellers();
+
+    //Lấy 5 cuốn sách bởi tên thể loại
+    @Query(value = """
+    SELECT b.*
+    FROM book b
+    JOIN category c ON b.category_id = c.id
+    WHERE LOWER(c.name) = LOWER(:name)
+    ORDER BY b.id DESC
+    LIMIT 5
+""", nativeQuery = true)
+    List<Book> findTop5ByName(@Param("name") String name);
 }

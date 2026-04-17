@@ -30,7 +30,10 @@ public class HomeController {
         // 2. Sách bán chạy
         model.addAttribute("bestSellerBooks", bookService.getTop5BestSellers());
 
-        // 3. Top 3 thể loại có nhiều sách nhất
+        // 3. Manga
+        model.addAttribute("mangaBooks", bookService.getTop5Manga());
+
+        // 4. Top 3 thể loại có nhiều sách nhất
         List<Category> top3Categories = categoryService.getTop3Categories();
         Map<Category, List<Book>> booksByTopCategories = new LinkedHashMap<>();
 

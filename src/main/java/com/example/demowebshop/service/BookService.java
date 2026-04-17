@@ -90,9 +90,13 @@ public class BookService {
         return bookRepository.findTop5ByNameContainingIgnoreCaseOrderByIdDesc(keyword);
     }
 
-    public void updateImage(Long id, String imagePath) {
-        Book book = getById(id);
-        book.setImage(imagePath);
-        bookRepository.save(book);
+//    public void updateImage(Long id, String imagePath) {
+//        Book book = getById(id);
+//        book.setImage(imagePath);
+//        bookRepository.save(book);
+//    }
+
+    public List<Book> getTop5Manga() {
+        return bookRepository.findTop5ByName("MANGA");
     }
 }

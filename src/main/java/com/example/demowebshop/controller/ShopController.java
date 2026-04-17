@@ -25,8 +25,8 @@ import java.math.BigDecimal;
 public class ShopController {
 
     private final BookService bookService;
-    private final CategoryService categoryService; // Thêm service thể loại
-    private final AuthorService authorService;     // Thêm service tác giả
+    private final CategoryService categoryService;
+    private final AuthorService authorService;
 
     @GetMapping
     public String shop(

@@ -21,8 +21,8 @@ import java.nio.file.Paths;
 public class BookController {
 
     private final BookService bookService;
-    private final CategoryService categoryService; // Thêm service thể loại
-    private final AuthorService authorService;     // Thêm service tác giả
+    private final CategoryService categoryService;
+    private final AuthorService authorService;
 
     @GetMapping
     public String list(Model model){
