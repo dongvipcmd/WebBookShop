@@ -19,7 +19,12 @@ public class OrderDetail {
     // FK trỏ tới orders.id
     private Long orderId;
 
+    @ManyToOne
+    @JoinColumn(name = "book_id", insertable = false, updatable = false)
+    private Book book;
+
     // FK trỏ tới book.id
+    @Column(name = "book_id")
     private Long bookId;
 
     private Integer quantity;
