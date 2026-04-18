@@ -23,6 +23,11 @@ public class Order {
 
     private LocalDateTime orderDate = LocalDateTime.now();
 
+    //LƯU THÔNG TIN KHÁCH VÃNG LAI
+    private String customerName;
+    private String phoneNumber;
+    private String shippingAddress;
+
     // Mã giảm giá sản phẩm
     private Long discountVoucherId;
 
@@ -36,4 +41,5 @@ public class Order {
     private BigDecimal finalAmount;       // tổng thanh toán cuối
 
     private String status = "PENDING";
+    private String paymentMethod; // "COD" hoặc "QR_CODE"
 }

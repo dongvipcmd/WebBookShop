@@ -19,6 +19,9 @@
 
     <div class="card">
         <div class="card-body text-center">
+            <img th:src="'https://img.vietqr.io/image/vcb-123456789-compact.jpg?amount=' + ${cart.finalAmount} + '&addInfo=DH' + ${orderId}"
+                 alt="QR Thanh toán" class="img-fluid mb-3" style="max-width: 250px;">
+            <p class="small text-danger">Quét mã để thanh toán nhanh</p>
 
             <p class="text-muted mb-1">Mã đơn hàng</p>
             <h5 th:text="'#' + ${orderId}" class="mb-4"></h5>

@@ -8,4 +8,11 @@ import lombok.Setter;
 public class CheckoutRequest {
     private String discountCode;
     private String shippingCode;
+
+    // khách vãng lai
+    private String customerName;
+    private String phoneNumber;
+    private String shippingAddress;
+
+    private String paymentMethod;
 }

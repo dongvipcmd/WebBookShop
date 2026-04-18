@@ -191,12 +191,20 @@ public class OrderService {
     }
 
     @Transactional
-    public Order placeOrder(Long userId, HttpSession session){
+    // 1. Sửa tham số đầu vào: Thêm CheckoutRequest request
+    public Order placeOrder(Long userId, HttpSession session, CheckoutRequest request){
         Order cart = getOrCreateOrder(userId, session);
 
         if(orderDetailRepository.countByOrderId(cart.getId()) == 0){
             throw new RuntimeException("Giỏ hàng trống");
         }
+
+        // 2. LƯU THÔNG TIN TỪ FORM HTML VÀO DATABASE
+        cart.setCustomerName(request.getCustomerName());
+        cart.setPhoneNumber(request.getPhoneNumber());
+        cart.setShippingAddress(request.getShippingAddress());
+        cart.setPaymentMethod(request.getPaymentMethod());
+
         //cart.setStatus("CONFIRMED");
         cart.setOrderDate(LocalDateTime.now());
         orderRepository.save(cart);
@@ -295,5 +303,24 @@ public class OrderService {
         voucher.setUsedQuantity(currentUsed + 1);
 
         voucherRepository.save(voucher);
+    }
+
+    // Lấy toàn bộ đơn hàng đã thanh toán hoặc chờ giao (không lấy giỏ hàng PENDING)
+    public List<Order> getAllConfirmedOrders() {
+        return orderRepository.findAll().stream()
+                .filter(o -> !"PENDING".equals(o.getStatus()))
+                .collect(Collectors.toList());
+    }
+
+    public Order getOrderById(Long id) {
+        return orderRepository.findById(id).orElseThrow(() -> new RuntimeException("Không tìm thấy đơn"));
+    }
+
+    @Transactional
+    public void deleteOrder(Long id) {
+
+        orderDetailRepository.deleteByOrderId(id);
+
+        orderRepository.deleteById(id);
     }
 }
