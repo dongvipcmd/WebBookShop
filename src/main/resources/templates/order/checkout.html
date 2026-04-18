@@ -49,12 +49,69 @@
                     </table>
                 </div>
             </div>
+
+            <div th:if="${isLoggedIn}" class="mt-4">
+                <h4 class="mb-4">Mã giảm giá dành cho bạn</h4>
+
+                <div th:if="${vouchers != null and !#lists.isEmpty(vouchers)}">
+
+                    <div th:each="v : ${vouchers}"
+                         class="border rounded p-3 mb-2 shadow-sm voucher-item"
+                         style="cursor:pointer"
+                         th:onclick="'fillVoucher(\\'' + ${v.code} + '\\')'">
+
+                        <!-- CODE -->
+                        <div class="fw-bold text-primary mb-1" th:text="${v.code}"></div>
+
+                        <!-- DISCOUNT -->
+                        <div th:if="${v.voucherType == T(com.example.demowebshop.enums.VoucherType).DISCOUNT}">
+
+                            <!-- % -->
+                            <span th:if="${v.discountType == T(com.example.demowebshop.enums.DiscountType).PERCENTAGE}">
+                    Giảm
+                    <b th:text="${v.discountPercent} + '%'"></b>
+                    <span th:if="${v.maxDiscount != null}">
+                        (tối đa
+                        <span th:text="${#numbers.formatDecimal(v.maxDiscount,0,'COMMA',0,'POINT')} + ' ₫'"></span>)
+                    </span>
+                </span>
+
+                            <!-- tiền -->
+                            <span th:if="${v.discountType == T(com.example.demowebshop.enums.DiscountType).FIXED}">
+                    Giảm
+                    <b th:text="${#numbers.formatDecimal(v.discountValue,0,'COMMA',0,'POINT')} + ' ₫'"></b>
+                </span>
+                        </div>
+
+                        <!-- SHIPPING -->
+                        <div th:if="${v.voucherType == T(com.example.demowebshop.enums.VoucherType).SHIPPING}">
+                <span>
+                    Giảm phí ship:
+                    <b th:text="${v.maxShippingDiscount != null ?
+                        #numbers.formatDecimal(v.maxShippingDiscount,0,'COMMA',0,'POINT') + ' ₫'
+                        : 'Miễn phí'}">
+                    </b>
+                </span>
+                        </div>
+
+                        <!-- Điều kiện -->
+                        <div class="small text-muted mt-1">
+                            Đơn tối thiểu:
+                            <span th:text="${#numbers.formatDecimal(v.minOrderValue,0,'COMMA',0,'POINT')} + ' ₫'"></span>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div th:if="${vouchers == null or #lists.isEmpty(vouchers)}"
+                     class="text-muted">
+                    Không có voucher khả dụng
+                </div>
+            </div>
         </div>
 
-
         <div class="col-md-5">
-
-
             <div class="card mb-3" th:if="${isLoggedIn}">
                 <div class="card-header">Mã giảm giá</div>
                 <div class="card-body">

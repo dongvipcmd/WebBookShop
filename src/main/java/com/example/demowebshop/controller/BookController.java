@@ -40,23 +40,7 @@ public class BookController {
     public String create(@ModelAttribute Book book,
                          @RequestParam(value = "imageFile", required = false) MultipartFile file) {
 
-        try {
-            if (file != null && !file.isEmpty()) {
-
-                String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
-
-                Path path = Paths.get("uploads/" + fileName);
-                Files.createDirectories(path.getParent());
-                Files.write(path, file.getBytes());
-
-                book.setImage("/uploads/" + fileName);
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        bookService.create(book);
+        bookService.create(book, file);
         return "redirect:/books";
     }
 
@@ -71,32 +55,7 @@ public class BookController {
                          @ModelAttribute Book book,
                          @RequestParam(value = "imageFile", required = false) MultipartFile file){
 
-        try {
-            Book oldBook = bookService.getById(id);
-
-            if (file != null && !file.isEmpty()) {
-                if (oldBook.getImage() != null) {
-                    String oldImagePath = oldBook.getImage().replace("/uploads/", "uploads/");
-                    Path oldPath = Paths.get(oldImagePath);
-                    Files.deleteIfExists(oldPath);
-                }
-
-                String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
-
-                Path path = Paths.get("uploads/" + fileName);
-                Files.createDirectories(path.getParent());
-                Files.write(path, file.getBytes());
-
-                book.setImage("/uploads/" + fileName);
-            } else {
-                book.setImage(oldBook.getImage());
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        bookService.update(id, book);
+        bookService.update(id, book, file);
         return "redirect:/books";
     }
 

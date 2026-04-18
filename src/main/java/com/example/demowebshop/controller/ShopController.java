@@ -3,6 +3,7 @@ package com.example.demowebshop.controller;
 import com.example.demowebshop.service.AuthorService;
 import com.example.demowebshop.service.BookService;
 import com.example.demowebshop.service.CategoryService;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -55,7 +56,8 @@ public class ShopController {
     }
 
     @GetMapping("/{id}")
-    public String detail(@PathVariable Long id, Model model){
+    public String detail(@PathVariable Long id, Model model, HttpSession session){
+        session.getAttribute("init");
         model.addAttribute("book", bookService.getById(id));
         return "shop/detail";
     }
