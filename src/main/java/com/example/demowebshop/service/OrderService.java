@@ -182,7 +182,7 @@ public class OrderService {
         cart.setDiscountAmount(discountAmount);
         cart.setShippingFee(SHIPPING_FEE);
         cart.setShippingDiscount(shippingDiscount);
-        cart.setFinalAmount(cart.getTotalAmount() // tính tổng chi phí cuối
+        cart.setFinalAmount(cart.getTotalAmount()
                 .subtract(discountAmount)
                 .add(SHIPPING_FEE)
                 .subtract(shippingDiscount));
