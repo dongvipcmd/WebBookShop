@@ -6,6 +6,7 @@ import com.example.demowebshop.entity.Order;
 import com.example.demowebshop.entity.User;
 import com.example.demowebshop.service.CategoryService;
 import com.example.demowebshop.service.OrderService;
+import com.example.demowebshop.service.VoucherService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -19,6 +20,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class OrderController {
 
     private final OrderService orderService;
+    private final VoucherService voucherService;
 
     // Lấy userId từ Authentication — null nếu khách chưa đăng nhập
     private Long getUserId(Authentication auth) {
@@ -91,6 +93,9 @@ public class OrderController {
         model.addAttribute("cartItems", orderService.getOrderItems(cart.getId()));
         model.addAttribute("request", new CheckoutRequest());
         model.addAttribute("isLoggedIn", userId != null);
+        if (userId != null) {
+            model.addAttribute("vouchers", voucherService.getAvailableVouchers(userId));
+        }
         return "order/checkout";
     }
 
@@ -108,6 +113,7 @@ public class OrderController {
             model.addAttribute("cartItems", orderService.getOrderItems(cart.getId()));
             model.addAttribute("request", request);
             model.addAttribute("isLoggedIn", true);
+            model.addAttribute("vouchers", voucherService.getAvailableVouchers(userId));
             return "order/checkout";
         } catch (RuntimeException e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
@@ -129,7 +135,7 @@ public class OrderController {
         }
     }
 
-    // THANH TOÁN
+
     @GetMapping("/payment/{orderId}")
     public String paymentPage(@PathVariable Long orderId, Model model) {
         model.addAttribute("orderId", orderId);

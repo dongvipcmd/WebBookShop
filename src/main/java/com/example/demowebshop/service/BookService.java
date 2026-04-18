@@ -5,6 +5,8 @@ import com.example.demowebshop.repository.BookRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.Sort;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.math.BigDecimal;
 
 import java.util.List;
@@ -14,6 +16,7 @@ import java.util.List;
 public class BookService {
 
     private final BookRepository bookRepository;
+    private final FileService fileService;
 
     public List<Book> getAll(){
         return bookRepository.findAll();
@@ -24,11 +27,18 @@ public class BookService {
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy sách"));
     }
 
-    public void create(Book book){
+    public void create(Book book, MultipartFile file) {
+
+        if (file != null && !file.isEmpty()) {
+            String imagePath = fileService.saveFile(file);
+            book.setImage(imagePath);
+        }
+
         bookRepository.save(book);
     }
 
-    public void update(Long id, Book newData){
+    public void update(Long id, Book newData, MultipartFile file){
+
         Book book = getById(id);
 
         book.setName(newData.getName());
@@ -38,8 +48,10 @@ public class BookService {
         book.setDescription(newData.getDescription());
         book.setStockQuantity(newData.getStockQuantity());
 
-        if (newData.getImage() != null && !newData.getImage().isEmpty()) {
-            book.setImage(newData.getImage());
+        if (file != null && !file.isEmpty()) {
+            fileService.deleteFile(book.getImage());
+            String imagePath = fileService.saveFile(file);
+            book.setImage(imagePath);
         }
 
         bookRepository.save(book);
@@ -89,12 +101,6 @@ public class BookService {
     public List<Book> searchLive(String keyword) {
         return bookRepository.findTop5ByNameContainingIgnoreCaseOrderByIdDesc(keyword);
     }
-
-//    public void updateImage(Long id, String imagePath) {
-//        Book book = getById(id);
-//        book.setImage(imagePath);
-//        bookRepository.save(book);
-//    }
 
     public List<Book> getTop5Manga() {
         return bookRepository.findTop5ByName("MANGA");

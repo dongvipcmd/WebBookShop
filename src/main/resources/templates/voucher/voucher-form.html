@@ -64,7 +64,7 @@
 <div class="sidebar">
   <div class="text-center py-4">
     <i class="fas fa-user-shield fa-3x text-warning"></i>
-    <h5 class="mt-2 fw-bold">Admin</h5>
+    <h5 class="mt-2 text-uppercase fw-bold">Admin</h5>
   </div>
 
   <a href="/admin"><i class="fas fa-chart-line me-2"></i> Dashboard</a>
@@ -152,14 +152,17 @@
           </div>
 
           <div class="col-md-6 mb-3">
+            <label class="form-label fw-semibold">Số lượng tối đa</label>
             <input type="number" class="form-control" th:field="*{totalQuantity}">
           </div>
 
           <div class="col-md-6 mb-3">
+            <label class="form-label fw-semibold">Ngày bắt đầu</label>
             <input type="date" class="form-control" th:field="*{startDate}">
           </div>
 
           <div class="col-md-6 mb-3">
+            <label class="form-label fw-semibold">Ngày kết thúc </label>
             <input type="date" class="form-control" th:field="*{endDate}">
           </div>
 
@@ -201,6 +204,19 @@
 
   document.getElementById("voucherType").addEventListener("change", toggleFields);
   window.onload = toggleFields;
+</script>
+
+<script>
+  function fillVoucher(code){
+      const discountInput = document.querySelector('input[name="discountCode"]');
+      const shippingInput = document.querySelector('input[name="shippingCode"]');
+
+      if(code.startsWith("SHIP")){
+          if(shippingInput) shippingInput.value = code;
+      } else {
+          if(discountInput) discountInput.value = code;
+      }
+  }
 </script>
 
 </body>

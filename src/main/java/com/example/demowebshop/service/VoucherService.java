@@ -1,6 +1,7 @@
 package com.example.demowebshop.service;
 
 import com.example.demowebshop.entity.Voucher;
+import com.example.demowebshop.entity.VoucherUsage;
 import com.example.demowebshop.enums.DiscountType;
 import com.example.demowebshop.enums.VoucherType;
 import com.example.demowebshop.repository.VoucherRepository;
@@ -11,6 +12,8 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -140,4 +143,17 @@ public class VoucherService {
         if (v.getVoucherType() != VoucherType.SHIPPING) return BigDecimal.ZERO;
         return v.getMaxShippingDiscount() == null ? shippingFee : v.getMaxShippingDiscount().min(shippingFee);
     }
+
+    // lấy ra các voucher khả dụng cho người dùng
+    public List<Voucher> getAvailableVouchers(Long userId) {
+        Set<Long> usedVoucherIds = voucherUsageRepository.findByUserId(userId)
+                .stream()
+                .map(VoucherUsage::getVoucherId)
+                .collect(Collectors.toSet());
+
+        return voucherRepository.findAll().stream()
+                .filter(v -> !usedVoucherIds.contains(v.getId()))
+                .collect(Collectors.toList());
+    }
+
 }

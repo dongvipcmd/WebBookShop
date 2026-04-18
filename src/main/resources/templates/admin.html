@@ -24,10 +24,9 @@
 
         .sidebar a {
             color: #adb5bd;
-            text-decoration: none;
             padding: 12px 20px;
             display: block;
-            transition: 0.3s;
+            text-decoration: none;
         }
 
         .sidebar a:hover,
@@ -43,35 +42,22 @@
             padding: 40px;
         }
 
-        /* Box */
-        .table-container {
+        .card-box {
             background: white;
             border-radius: 15px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.05);
-            padding: 25px;
         }
 
-        /* Bio fix */
-        .bio {
-            max-width: 300px;
-            display: -webkit-box;
-            -webkit-line-clamp: 3; /* 3 dòng */
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-
-        .text-truncate-custom {
-            overflow: hidden;
-            white-space: nowrap;
-            text-overflow: ellipsis;
-            max-width: 200px;
+        .table-header-blue {
+            background: linear-gradient(45deg, #0d6efd, #0a58ca);
+            color: white;
         }
     </style>
 </head>
 
 <body>
 
-<!-- Sidebar -->
+
 <div class="sidebar">
     <div class="text-center py-4">
         <i class="fas fa-user-shield fa-3x text-warning"></i>
@@ -80,7 +66,7 @@
 
     <a href="/admin"><i class="fas fa-chart-line me-2"></i> Dashboard</a>
     <a href="/authors" class="active"><i class="fas fa-user me-2"></i> Tác giả</a>
-    <a href="/books"><i class="fas fa-book me-2"></i> Sản phẩm</a>
+    <a href="/books"><i class="fas fa-book me-2"></i>Sách</a>
     <a href="/categories"><i class="fas fa-tags me-2"></i> Thể loại</a>
     <a href="/vouchers">
         <i class="fas fa-ticket-alt me-2"></i> Voucher
@@ -101,7 +87,7 @@
 <!-- Main -->
 <div class="main-content">
 
-    <!-- Header -->
+
 
 </div>
 

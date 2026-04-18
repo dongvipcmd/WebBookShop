@@ -63,7 +63,7 @@
 <div class="sidebar">
     <div class="text-center py-4">
         <i class="fas fa-user-shield fa-3x text-warning"></i>
-        <h5 class="mt-2 fw-bold">Admin</h5>
+        <h5 class="mt-2 text-uppercase fw-bold">Admin</h5>
     </div>
 
     <a href="/admin"><i class="fas fa-chart-line me-2"></i> Dashboard</a>
@@ -126,7 +126,7 @@
                     <td th:text="${v.id}"></td>
 
                     <td>
-                        <span class="badge bg-info text-dark" th:text="${v.code}"></span>
+                        <span th:text="${v.code}"></span>
                     </td>
 
                     <td>
@@ -138,29 +138,27 @@
                     </td>
 
                     <td>
-
-                        <!-- DISCOUNT -->
                         <span th:if="${v.voucherType == T(com.example.demowebshop.enums.VoucherType).DISCOUNT}">
 
-        <!-- % -->
-        <span th:if="${v.discountType == T(com.example.demowebshop.enums.DiscountType).PERCENTAGE}"
-              th:text="${v.discountPercent != null ? v.discountPercent + '%' : '-'}">
-        </span>
 
-                            <!-- tiền -->
-        <span th:if="${v.discountType == T(com.example.demowebshop.enums.DiscountType).FIXED}"
-              th:text="${v.discountValue != null ?
-                  #numbers.formatDecimal(v.discountValue, 0, 'COMMA', 0, 'POINT') + ' ₫' : '-'}">
-        </span>
+                            <span th:if="${v.discountType == T(com.example.demowebshop.enums.DiscountType).PERCENTAGE}"
+                                  th:text="${v.discountPercent != null ? v.discountPercent + '%' : '-'}">
+                            </span>
 
-    </span>
+                                                <!-- tiền -->
+                            <span th:if="${v.discountType == T(com.example.demowebshop.enums.DiscountType).FIXED}"
+                                  th:text="${v.discountValue != null ?
+                                      #numbers.formatDecimal(v.discountValue, 0, 'COMMA', 0, 'POINT') + ' ₫' : '-'}">
+                            </span>
 
-                        <!-- SHIPPING -->
+                        </span>
+
+
                         <span th:if="${v.voucherType == T(com.example.demowebshop.enums.VoucherType).SHIPPING}">
-        <span th:text="${v.maxShippingDiscount != null ?
-            #numbers.formatDecimal(v.maxShippingDiscount, 0, 'COMMA', 0, 'POINT') + ' ₫' : 'Miễn phí ship'}">
-        </span>
-    </span>
+                        <span th:text="${v.maxShippingDiscount != null ?
+                            #numbers.formatDecimal(v.maxShippingDiscount, 0, 'COMMA', 0, 'POINT') + ' ₫' : 'Miễn phí ship'}">
+                        </span>
+                        </span>
 
                     </td>
 
