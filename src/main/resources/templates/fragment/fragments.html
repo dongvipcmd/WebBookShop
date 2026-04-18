@@ -134,7 +134,8 @@
                         <span sec:authentication="name">Username</span>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end shadow">
-                        <li><a class="dropdown-item" href="#"><i class="bi bi-person me-2"></i>Tài khoản</a></li>
+                        <li><a class="dropdown-item" th:href="@{/profile}"><i class="bi bi-person me-2"></i>Hồ sơ của tôi</a></li>
+                        <li><a class="dropdown-item" th:href="@{/profile/change-password}"><i class="bi bi-key me-2"></i>Đổi mật khẩu</a></li>
                         <li><a class="dropdown-item" th:href="@{/order/history}"><i class="bi bi-bag me-2"></i>Lịch sử đơn hàng</a></li>
                         <li><hr class="dropdown-divider"></li>
                         <li>

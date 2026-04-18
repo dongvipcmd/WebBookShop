@@ -2,11 +2,11 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Quản lý Tác giả</title>
+    <title>Admin Dashboard</title>
 
-    <!-- Bootstrap + Icon -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <style>
         body {
@@ -42,15 +42,22 @@
             padding: 40px;
         }
 
-        .card-box {
+        .stat-card {
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            transition: transform 0.2s;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .chart-container {
             background: white;
             border-radius: 15px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.05);
-        }
-
-        .table-header-blue {
-            background: linear-gradient(45deg, #0d6efd, #0a58ca);
-            color: white;
+            padding: 25px;
+            margin-top: 30px;
         }
     </style>
 </head>
@@ -64,9 +71,9 @@
         <h5 class="mt-2 text-uppercase fw-bold">Admin</h5>
     </div>
 
-    <a href="/admin"><i class="fas fa-chart-line me-2"></i> Dashboard</a>
-    <a href="/authors" class="active"><i class="fas fa-user me-2"></i> Tác giả</a>
-    <a href="/books"><i class="fas fa-book me-2"></i>Sách</a>
+    <a href="/admin" class="active"><i class="fas fa-chart-line me-2"></i> Dashboard</a>
+    <a href="/authors"><i class="fas fa-user me-2"></i> Tác giả</a>
+    <a href="/books"><i class="fas fa-book me-2"></i> Sản phẩm</a>
     <a href="/categories"><i class="fas fa-tags me-2"></i> Thể loại</a>
     <a href="/vouchers">
         <i class="fas fa-ticket-alt me-2"></i> Voucher
@@ -74,11 +81,11 @@
 
     <hr class="mx-3">
 
-    <a th:href="@{/}">
+    <a th:href="@{/home}">
         <i class="fas fa-home me-2"></i> Trang chủ
     </a>
     <form th:action="@{/logout}" method="post" style="display:inline;">
-        <button type="submit" class="text-danger border-0 bg-transparent">
+        <button type="submit" class="text-danger border-0 bg-transparent px-3">
             <i class="fas fa-sign-out-alt me-2"></i> Đăng xuất
         </button>
     </form>
@@ -87,11 +94,200 @@
 <!-- Main -->
 <div class="main-content">
 
+    <h2 class="mb-4 fw-bold">Thống Kê Tổng Quan</h2>
 
+    <div class="row g-4">
+        <div class="col-md-3">
+            <div class="card stat-card bg-primary text-white h-100 border-0">
+                <div class="card-body py-4">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-uppercase mb-2 text-white-50">Tổng Doanh Thu</h6>
+                            <h3 class="mb-0 fw-bold" th:text="${#numbers.formatDecimal(totalRevenue, 0, 'COMMA', 0, 'POINT')} + ' đ'">0 đ</h3>
+                        </div>
+                        <i class="fas fa-coins fa-3x opacity-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3">
+            <div class="card stat-card bg-success text-white h-100 border-0">
+                <div class="card-body py-4">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-uppercase mb-2 text-white-50">Đơn Hàng (Đã Thanh Toán)</h6>
+                            <h3 class="mb-0 fw-bold" th:text="${totalOrders}">0</h3>
+                        </div>
+                        <i class="fas fa-shopping-cart fa-3x opacity-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card stat-card bg-warning text-dark h-100 border-0">
+                <div class="card-body py-4">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-uppercase mb-2 text-black-50">Kho Sách</h6>
+                            <h3 class="mb-0 fw-bold" th:text="${totalBooks}">0</h3>
+                        </div>
+                        <i class="fas fa-book-open fa-3x opacity-25"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card stat-card bg-danger text-white h-100 border-0">
+                <div class="card-body py-4">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h6 class="text-uppercase mb-2 text-white-50">Khách Hàng</h6>
+                            <h3 class="mb-0 fw-bold" th:text="${totalUsers}">0</h3>
+                        </div>
+                        <i class="fas fa-users fa-3x opacity-50"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="chart-container">
+        <div class="row mb-4 align-items-end" style="background: #f8f9fa; padding: 15px; border-radius: 10px;">
+            <div class="col-md-3">
+                <label class="form-label fw-bold">Từ ngày</label>
+                <input type="date" id="startDate" class="form-control">
+            </div>
+            <div class="col-md-3">
+                <label class="form-label fw-bold">Đến ngày</label>
+                <input type="date" id="endDate" class="form-control">
+            </div>
+            <div class="col-md-3">
+                <label class="form-label fw-bold">Nhóm theo</label>
+                <select id="groupType" class="form-select">
+                    <option value="day">Ngày</option>
+                    <option value="month" selected>Tháng</option>
+                    <option value="year">Năm</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <button class="btn btn-primary w-100 fw-bold" onclick="fetchChartData()">
+                    <i class="fas fa-filter"></i> Lọc Thống Kê
+                </button>
+            </div>
+        </div>
+
+        <div class="text-center mb-3">
+            <h4 id="chartTitle" class="fw-bold">Biểu Đồ Doanh Thu</h4>
+            <h5 class="text-muted">Tổng doanh thu kỳ lọc: <span id="dynamicTotalRevenue" class="text-danger fw-bold fs-4">0 đ</span></h5>
+        </div>
+
+        <canvas id="revenueChart" height="100"></canvas>
+    </div>
+
+</div> <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    let myChart = null; // Lưu trữ instance của biểu đồ để có thể hủy khi vẽ lại
+
+    // Khi trang vừa load xong, set ngày mặc định và tải biểu đồ
+    document.addEventListener("DOMContentLoaded", function() {
+        const today = new Date();
+        const firstDayOfYear = new Date(today.getFullYear(), 0, 1); // 1/1 năm hiện tại
+
+        document.getElementById('endDate').value = today.toISOString().split('T')[0];
+        
+        // Điều chỉnh format ngày (YYYY-MM-DD) để gán cho thẻ input type="date"
+        let startDayStr = firstDayOfYear.getFullYear() + "-" + 
+                         String(firstDayOfYear.getMonth() + 1).padStart(2, '0') + "-" + 
+                         String(firstDayOfYear.getDate()).padStart(2, '0');
+        document.getElementById('startDate').value = startDayStr;
+
+        fetchChartData(); // Tự động load dữ liệu lần đầu
+    });
+
+    function fetchChartData() {
+        const startDate = document.getElementById('startDate').value;
+        const endDate = document.getElementById('endDate').value;
+        const groupType = document.getElementById('groupType').value;
+
+        if(!startDate || !endDate) {
+            alert("Vui lòng chọn đầy đủ ngày bắt đầu và kết thúc!");
+            return;
+        }
+
+        // Gọi API
+        fetch(`/api/admin/revenue-chart?type=${groupType}&startDate=${startDate}&endDate=${endDate}`)
+            .then(response => response.json())
+            .then(data => {
+                updateChartUI(data, groupType);
+            })
+            .catch(error => console.error("Error fetching chart data:", error));
+    }
+
+    function updateChartUI(data, groupType) {
+        // Cập nhật tổng doanh thu dạng chữ
+        const totalRev = data.filteredTotal;
+        document.getElementById('dynamicTotalRevenue').innerText = new Intl.NumberFormat('vi-VN').format(totalRev) + ' đ';
+
+        // Cập nhật title
+        let titleText = groupType === 'day' ? 'Biểu Đồ Theo Ngày' : 
+                        groupType === 'month' ? 'Biểu Đồ Theo Tháng' : 'Biểu Đồ Theo Năm';
+        document.getElementById('chartTitle').innerText = titleText;
+
+        // Tách dữ liệu cho Chart.js
+        const chartDataList = data.chartData;
+        const labels = chartDataList.map(item => item.label);
+        const revenues = chartDataList.map(item => item.revenue);
+
+        // Hủy biểu đồ cũ nếu tồn tại trước khi vẽ biểu đồ mới
+        if (myChart != null) {
+            myChart.destroy();
+        }
+
+        const ctx = document.getElementById('revenueChart').getContext('2d');
+        myChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels, // Mảng các nhãn (ví dụ: ['2025', '2026'])
+                datasets: [{
+                    label: 'Doanh thu (VNĐ)',
+                    data: revenues, // Mảng giá trị
+                    backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1,
+                    borderRadius: 5
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return value.toLocaleString('vi-VN') + ' đ';
+                            }
+                        }
+                    }
+                },
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                let val = context.parsed.y || 0;
+                                return 'Doanh thu: ' + new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(val);
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
+</script>
+</body>
+</html>
 
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
-</body>
-</html>
