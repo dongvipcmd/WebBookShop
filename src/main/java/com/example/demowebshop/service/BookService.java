@@ -75,12 +75,11 @@ public class BookService {
         Sort sort = Sort.by(Sort.Direction.DESC, "id");
 
         if ("priceAsc".equals(sortBy)) {
-            sort = Sort.by(Sort.Direction.ASC, "price"); // Giá thấp nhất
+            sort = Sort.by(Sort.Direction.ASC, "price");
         } else if ("priceDesc".equals(sortBy)) {
-            sort = Sort.by(Sort.Direction.DESC, "price"); // Giá cao nhất
+            sort = Sort.by(Sort.Direction.DESC, "price");
         } else if ("bestSelling".equals(sortBy)) {
-            // Lưu ý: Cần thêm thuộc tính 'soldQuantity' vào entity Book để dùng được tính năng này
-            // sort = Sort.by(Sort.Direction.DESC, "soldQuantity");
+            sort = Sort.by(Sort.Direction.DESC, "soldQuantity");
         }
 
         return bookRepository.filterBooks(categoryId, authorId, maxPrice,keyword, sort);
@@ -91,7 +90,7 @@ public class BookService {
     }
 
     public List<Book> getTop5BestSellers() {
-        return bookRepository.findTop5BestSellers();
+        return bookRepository.findTop5ByOrderBySoldQuantityDesc();
     }
 
     public List<Book> getTop5ByCategory(Long categoryId) {
@@ -103,6 +102,6 @@ public class BookService {
     }
 
     public List<Book> getTop5Manga() {
-        return bookRepository.findTop5ByName("MANGA");
+        return bookRepository.findTop5ByCategoryNameIgnoreCaseOrderByIdDesc("MANGA");
     }
 }
