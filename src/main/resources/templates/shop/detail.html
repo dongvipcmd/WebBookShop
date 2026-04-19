@@ -3,10 +3,71 @@
 <head>
   <title>Chi tiết sách</title>
 
+  <!-- Bootstrap -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-  <link rel="stylesheet" th:href="@{/css/style.css}">
 
+  <style>
+    .book-card {
+      border-radius: 20px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+      padding: 25px;
+      background: #fff;
+    }
+
+    .book-img {
+      max-width: 100%;
+      height: 350px;
+      object-fit: cover;
+      border-radius: 15px;
+      transition: 0.3s;
+    }
+
+    .book-img:hover {
+      transform: scale(1.05);
+    }
+
+    .book-title {
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .meta {
+      color: #555;
+      margin-bottom: 6px;
+    }
+
+    .price {
+      font-size: 26px;
+      font-weight: bold;
+      color: #e74c3c;
+      margin: 15px 0;
+    }
+
+    .btn-buy {
+      background: linear-gradient(135deg, #ff6a00, #ee0979);
+      border: none;
+      color: #fff;
+      padding: 10px 20px;
+      border-radius: 10px;
+      transition: 0.3s;
+    }
+
+    .btn-buy:hover {
+      opacity: 0.9;
+    }
+
+    .qty-input {
+      width: 120px;
+      border-radius: 10px;
+    }
+
+    .desc-box {
+      background: #f8f9fa;
+      padding: 15px;
+      border-radius: 10px;
+    }
+  </style>
 </head>
 
 <body>
@@ -15,27 +76,29 @@
 
 <div class="container mt-5">
 
-  <div class="book-container">
+  <div class="book-card">
 
-    <div class="row">
+    <div class="row align-items-center">
 
-
+      <!-- ẢNH -->
       <div class="col-md-5 text-center">
         <img th:src="${book.image != null and book.image != ''} ? ${book.image} : 'https://via.placeholder.com/300'"
              class="book-img"/>
       </div>
 
-
+      <!-- THÔNG TIN -->
       <div class="col-md-7">
 
         <h2 class="book-title" th:text="${book.name}"></h2>
 
         <p class="meta">
+          <i class="bi bi-person"></i>
           <strong>Tác giả:</strong>
           <span th:text="${book.author.fullName}"></span>
         </p>
 
         <p class="meta">
+          <i class="bi bi-tags"></i>
           <strong>Thể loại:</strong>
           <span th:text="${book.category.name}"></span>
         </p>
@@ -44,40 +107,71 @@
            th:text="${#numbers.formatDecimal(book.price, 0, 'COMMA', 0, 'POINT')} + ' ₫'">
         </p>
 
+        <!-- TÌNH TRẠNG -->
         <p class="meta">
-          <strong>Còn lại:</strong>
-          <span th:text="${book.stockQuantity}"></span> sản phẩm
+          <i class="bi bi-box"></i>
+          <strong>Tình trạng:</strong>
+
+          <!-- Còn hàng -->
+          <span th:if="${book.stockQuantity > 0}">
+            Còn <span th:text="${book.stockQuantity}"></span> sản phẩm
+          </span>
+
+          <!-- Hết hàng -->
+          <span th:if="${book.stockQuantity == 0}" class="text-danger fw-bold">
+            Hết hàng
+          </span>
         </p>
 
         <hr>
 
-
+        <!-- MÔ TẢ -->
         <h5>Mô tả</h5>
-        <p th:text="${book.description}"></p>
+        <div class="desc-box">
+          <p th:text="${book.description}"></p>
+        </div>
 
         <hr>
 
-
-        <form th:action="@{/cart/add}" method="post">
+        <!-- FORM -->
+        <form th:action="@{/cart/add}" method="post" class="d-flex align-items-center gap-3">
 
           <input type="hidden" name="bookId" th:value="${book.id}" />
 
-          <div class="mb-3">
+          <!-- SỐ LƯỢNG -->
+          <div>
             <label class="form-label">Số lượng</label>
             <input type="number"
                    name="quantity"
                    value="1"
                    min="1"
                    th:max="${book.stockQuantity}"
-                   class="form-control"
-                   style="width: 120px;">
+                   class="form-control qty-input"
+                   th:disabled="${book.stockQuantity == 0}">
           </div>
 
-          <button type="submit" class="btn btn-buy">
-            Thêm vào giỏ
-          </button>
+          <!-- BUTTON -->
+          <div class="mt-4">
+            <button type="submit"
+                    class="btn btn-buy"
+                    th:disabled="${book.stockQuantity == 0}">
 
-          <a th:href="@{/shop}" class="btn btn-outline-secondary">Quay lại</a>
+              <!-- Còn hàng -->
+              <span th:if="${book.stockQuantity > 0}">
+                <i class="bi bi-cart-plus"></i> Thêm vào giỏ
+              </span>
+
+              <!-- Hết hàng -->
+              <span th:if="${book.stockQuantity == 0}">
+                Hết hàng
+              </span>
+
+            </button>
+
+            <a th:href="@{/shop}" class="btn btn-outline-secondary ms-2">
+              Quay lại
+            </a>
+          </div>
 
         </form>
 
@@ -88,7 +182,9 @@
   </div>
 
 </div>
+
 <div th:replace="~{fragment/footer :: footer}"></div>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

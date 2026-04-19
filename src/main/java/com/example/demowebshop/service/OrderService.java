@@ -129,6 +129,11 @@
             Order cart = getOrCreateOrder(userId, session);
             OrderDetail detail = orderDetailRepository.findById(detailId)
                     .orElseThrow(() -> new RuntimeException("Không tìm thấy sản phẩm trong giỏ"));
+
+            Book book = bookRepository.findById(detail.getBookId())
+                    .orElseThrow(() -> new RuntimeException("Không tìm thấy sách"));
+
+            if(book.getStockQuantity() < quantity) throw new RuntimeException("Số lượng sách không đủ");
     
             if(quantity <=0 ){
                 orderDetailRepository.delete(detail);
@@ -197,7 +202,6 @@
             if(orderDetailRepository.countByOrderId(cart.getId()) == 0){
                 throw new RuntimeException("Giỏ hàng trống");
             }
-            //cart.setStatus("CONFIRMED");
             cart.setOrderDate(LocalDateTime.now());
             orderRepository.save(cart);
     
@@ -215,7 +219,7 @@
     
             for(OrderDetail detail : details){
                 Book book = bookRepository.findById(detail.getBookId())
-                        .orElseThrow(()-> new RuntimeException("Book not found"));
+                        .orElseThrow(()-> new RuntimeException("Không tìm thấy sách"));
     
                 if(book.getStockQuantity() < detail.getQuantity()){
                     throw new RuntimeException("Số lượng sách không đủ");

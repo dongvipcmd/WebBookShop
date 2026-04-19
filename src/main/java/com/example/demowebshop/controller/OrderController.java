@@ -121,7 +121,7 @@ public class OrderController {
         }
     }
 
-    // Xác nhận đặt hàng — cả khách lẫn user đều được
+    //Xác nhận đặt hàng — cả khách lẫn user đều được
     @PostMapping("/checkout/place")
     public String placeOrder(Authentication auth,
                              HttpSession session,
