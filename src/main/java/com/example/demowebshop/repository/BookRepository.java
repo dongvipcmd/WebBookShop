@@ -32,20 +32,8 @@ public interface BookRepository extends JpaRepository<Book, Long> {
     List<Book> findTop5ByCategoryIdOrderByIdDesc(Long categoryId);
 
     // Lấy 5 sách bán chạy nhất (Tính tổng số lượng trong order_detail)
-    @Query(value = "SELECT b.* FROM book b " +
-            "LEFT JOIN order_detail od ON b.id = od.book_id " +
-            "GROUP BY b.id " +
-            "ORDER BY SUM(od.quantity) DESC LIMIT 5", nativeQuery = true)
-    List<Book> findTop5BestSellers();
+    List<Book> findTop5ByOrderBySoldQuantityDesc();
 
     //Lấy 5 cuốn sách bởi tên thể loại
-    @Query(value = """
-    SELECT b.*
-    FROM book b
-    JOIN category c ON b.category_id = c.id
-    WHERE LOWER(c.name) = LOWER(:name)
-    ORDER BY b.id DESC
-    LIMIT 5
-""", nativeQuery = true)
-    List<Book> findTop5ByName(@Param("name") String name);
+    List<Book> findTop5ByCategoryNameIgnoreCaseOrderByIdDesc(String name);
 }

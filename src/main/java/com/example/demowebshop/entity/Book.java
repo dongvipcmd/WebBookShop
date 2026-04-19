@@ -3,6 +3,7 @@ package com.example.demowebshop.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.Formula;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -43,6 +44,15 @@ public class Book {
     @ManyToOne
     @JoinColumn(name = "author_id", insertable = false, updatable = false)
     private Author author;
+
+    @Formula("""
+    (SELECT COALESCE(SUM(od.quantity), 0)
+     FROM order_detail od
+     JOIN orders o ON od.order_id = o.id
+     WHERE od.book_id = id
+       AND o.status = 'PAID')
+""")
+    private Integer soldQuantity;
 
 }
 
