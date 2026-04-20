@@ -4,6 +4,7 @@ import com.example.demowebshop.config.CustomUserDetails;
 import com.example.demowebshop.dto.CheckoutRequest;
 import com.example.demowebshop.entity.Order;
 import com.example.demowebshop.entity.User;
+import com.example.demowebshop.repository.OrderDetailRepository;
 import com.example.demowebshop.service.CategoryService;
 import com.example.demowebshop.service.OrderService;
 import com.example.demowebshop.service.VoucherService;
@@ -21,6 +22,7 @@ public class OrderController {
 
     private final OrderService orderService;
     private final VoucherService voucherService;
+    private final OrderDetailRepository orderDetailRepository;
 
     // Lấy userId từ Authentication — null nếu khách chưa đăng nhập
     private Long getUserId(Authentication auth) {
@@ -170,4 +172,14 @@ public class OrderController {
         model.addAttribute("orders", orderService.getOrderHistory(userId));
         return "order/history";
     }
+
+    @GetMapping("/admin/statistical")
+    public String dashboard(Model model) {
+
+        model.addAttribute("totalRevenue", orderService.getTotalRevenue());
+        model.addAttribute("bookSales", orderService.getBookSales());
+
+        return "statical/statistical";
+    }
+
 }

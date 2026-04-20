@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Quản lý Tác giả</title>
+
+  <!-- Bootstrap + Icon -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    body {
+        background-color: #f4f7f6;
+    }
+
+    /* Sidebar */
+    .sidebar {
+        height: 100vh;
+        background: #212529;
+        color: white;
+        position: fixed;
+        width: 240px;
+    }
+
+    .sidebar a {
+        color: #adb5bd;
+        padding: 12px 20px;
+        display: block;
+        text-decoration: none;
+    }
+
+    .sidebar a:hover,
+    .sidebar a.active {
+        background: #343a40;
+        color: #ffc107;
+        border-left: 4px solid #ffc107;
+    }
+
+    /* Main */
+    .main-content {
+        margin-left: 240px;
+        padding: 40px;
+    }
+
+    .card-box {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+    }
+
+    .table-header-blue {
+        background: linear-gradient(45deg, #0d6efd, #0a58ca);
+        color: white;
+    }
+  </style>
+</head>
+
+<body>
+
+
+<div class="sidebar">
+  <div class="text-center py-4">
+    <i class="fas fa-user-shield fa-3x text-warning"></i>
+    <h5 class="mt-2 text-uppercase fw-bold">Admin</h5>
+  </div>
+
+  <a href="/admin"><i class="fas fa-chart-line me-2"></i> Dashboard</a>
+  <a href="/authors" class="active"><i class="fas fa-user me-2"></i> Tác giả</a>
+  <a href="/books"><i class="fas fa-book me-2"></i>Sách</a>
+  <a href="/categories"><i class="fas fa-tags me-2"></i> Thể loại</a>
+  <a href="/vouchers">
+    <i class="fas fa-ticket-alt me-2"></i> Voucher
+  </a>
+  <a href="/admin/statistical">
+    <i class="fas fa-chart-area me-2"></i> Thống kê
+  </a>
+
+  <hr class="mx-3">
+
+  <a th:href="@{/home}">
+    <i class="fas fa-home me-2"></i> Trang chủ
+  </a>
+  <form th:action="@{/logout}" method="post" style="display:inline;">
+    <button type="submit" class="text-danger border-0 bg-transparent">
+      <i class="fas fa-sign-out-alt me-2"></i> Đăng xuất
+    </button>
+  </form>
+</div>
+
+<!-- Main -->
+<div class="main-content">
+
+  <div class="container mt-4">
+
+    <h2 class="mb-4">Thống kê</h2>
+
+    <!-- Tổng doanh thu -->
+    <div class="alert alert-success">
+      <h4>
+        Tổng doanh thu:
+        <span th:text="${#numbers.formatDecimal(totalRevenue, 0, 'COMMA', 0, 'POINT')}"></span> VND
+      </h4>
+    </div>
+
+    <!-- Bảng sách bán -->
+    <h4> Sách đã bán</h4>
+
+    <table class="table table-bordered table-hover mt-3">
+      <thead class="table-dark">
+      <tr>
+        <th>#</th>
+        <th>Tên sách</th>
+        <th>Số lượng đã bán</th>
+      </tr>
+      </thead>
+
+      <tbody>
+      <tr th:each="b,stat  : ${bookSales}">
+        <td th:text="${stat.index + 1}"></td>
+        <td th:text="${b.bookName}"></td>
+        <td th:text="${b.totalQuantity}"></td>
+      </tr>
+      </tbody>
+    </table>
+
+  </div>
+
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

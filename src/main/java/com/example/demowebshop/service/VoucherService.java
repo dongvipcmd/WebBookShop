@@ -22,8 +22,11 @@ public class VoucherService {
     private final VoucherRepository voucherRepository;
     private final VoucherUsageRepository voucherUsageRepository;
 
-    public void createVoucher(Voucher voucher){
-        voucherRepository.save(voucher);
+    public void createVoucher(Voucher request){
+        if (voucherRepository.findByCode(request.getCode()).isPresent()) {
+            throw new RuntimeException("Mã voucher đã tồn tại");
+        }
+        voucherRepository.save(request);
     }
 
     public Voucher getById(Long id){

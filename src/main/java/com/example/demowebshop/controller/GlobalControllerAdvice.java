@@ -15,15 +15,10 @@ import java.util.List;
 public class GlobalControllerAdvice {
 
     private final CategoryService categoryService;
-    private final AuthorService authorService;
 
     @ModelAttribute("categories")
     public List<Category> getCategories(){
         return categoryService.getAll();
     }
 
-    @ModelAttribute("authors")
-    public List<Author> authors(){
-        return authorService.getAll();
-    }
 }
