@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/vouchers")
@@ -27,9 +28,15 @@ public class VoucherController {
     }
 
     @PostMapping("")
-    public String create(@ModelAttribute Voucher voucher){
-        voucherService.createVoucher(voucher);
-        return "redirect:/vouchers";
+    public String create(@ModelAttribute Voucher voucher, Model model){
+        try {
+            voucherService.createVoucher(voucher);
+            return "redirect:/vouchers";
+        } catch (RuntimeException e){
+            model.addAttribute("error", e.getMessage());
+            model.addAttribute("voucher", voucher);
+            return "voucher/voucher-form";
+        }
     }
 
     @GetMapping("/edit/{id}")

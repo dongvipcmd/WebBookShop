@@ -1,5 +1,6 @@
     package com.example.demowebshop.service;
     
+    import com.example.demowebshop.dto.BookSalesDTO;
     import com.example.demowebshop.dto.CheckoutRequest;
     import com.example.demowebshop.entity.*;
     import com.example.demowebshop.enums.VoucherType;
@@ -299,5 +300,14 @@
             voucher.setUsedQuantity(currentUsed + 1);
     
             voucherRepository.save(voucher);
+        }
+
+        public List<BookSalesDTO> getBookSales() {
+            return orderDetailRepository.getBookSales();
+        }
+
+        public BigDecimal getTotalRevenue() {
+            BigDecimal total = orderRepository.getTotalRevenue();
+            return total != null ? total : BigDecimal.ZERO;
         }
     }
